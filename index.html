@@ -5,25 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fath's Works Duty</title>
     
-    <!-- Menggunakan Tailwind CSS -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font modern dan bersih -->
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- FIREBASE SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <!-- Firebase v8 SDK (Kompatibilitas Stabil) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <style>
-        /* CSS KHUSUS GLASSMORPHISM & TEMA */
+        /* TEMA: BIRU LANGIT & SLATE MESH GRADIENT */
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            /* Mesh Gradient: Sky Blue & Slate yang menenangkan */
-            background: linear-gradient(-45deg, #e0f2fe, #bae6fd, #f1f5f9, #cbd5e1);
-            background-size: 400% 400%;
+            margin: 0;
+            min-height: 100vh;
+            background-color: #f1f5f9;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(210, 100%, 85%, 1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(220, 100%, 90%, 1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(200, 100%, 85%, 1) 0, transparent 50%),
+                radial-gradient(at 100% 100%, hsla(215, 60%, 80%, 1) 0, transparent 50%),
+                radial-gradient(at 0% 100%, hsla(210, 80%, 90%, 1) 0, transparent 50%);
+            background-size: 200% 200%;
             animation: calmMesh 15s ease infinite;
-            background-attachment: fixed;
             color: #1e293b;
+            overflow-x: hidden;
         }
 
         @keyframes calmMesh {
@@ -32,54 +39,33 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Animasi Lampu Berdenyut untuk Prioritas */
-        .pulse-high {
-            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
-            animation: pulse-red 2s infinite;
-        }
-        @keyframes pulse-red {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-            70% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-        }
-
-        .pulse-medium {
-            box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7);
-            animation: pulse-yellow 2s infinite;
-        }
-        @keyframes pulse-yellow {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7); }
-            70% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(234, 179, 8, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); }
-        }
-
+        /* EFEK GLASSMORPHISM */
         .glass-panel {
             background: rgba(255, 255, 255, 0.45);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.7);
             border-radius: 20px;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
         }
 
+        /* Kartu Tugas - OVERFLOW VISIBLE agar Menu Titik 3 tidak terpotong */
         .glass-card {
-            background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.9);
             border-radius: 16px;
             box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.05);
             transition: all 0.3s ease;
             cursor: grab;
-            overflow: hidden; 
+            position: relative;
         }
 
         .glass-card:active { cursor: grabbing; }
-        .glass-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.1);
-        }
+        .glass-card:hover { transform: translateY(-4px); box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.1); }
 
+        /* Komponen UI */
         .glass-button {
             background: rgba(255, 255, 255, 0.9);
             border: 1px solid rgba(255, 255, 255, 1);
@@ -87,7 +73,6 @@
             transition: all 0.2s;
             font-weight: 600;
         }
-
         .glass-button:hover {
             background: rgba(255, 255, 255, 1);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -95,45 +80,31 @@
         }
 
         .glass-input {
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.8);
             border-radius: 12px;
             transition: all 0.3s ease;
         }
-
         .glass-input:focus {
             outline: none;
             background: rgba(255, 255, 255, 0.95);
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-        }
-
-        .list-row {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            transition: all 0.2s;
-        }
-        .list-row:hover {
-            background: rgba(255, 255, 255, 0.9);
-            transform: scale(1.005);
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3);
         }
 
         .text-gradient {
-            background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+            background: linear-gradient(135deg, #0284c7 0%, #3b82f6 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .color-radio:checked + div {
-            border: 3px solid #1e293b;
-            transform: scale(1.1);
-        }
+        .color-radio:checked + div { border: 3px solid #1e293b; transform: scale(1.1); }
+        
+        /* Hari Libur Merah */
+        .holiday-red { color: #ef4444 !important; font-weight: 800; }
     </style>
 </head>
-
-<!-- Menggunakan min-h-screen agar bisa scroll alami -->
-<body class="min-h-screen flex flex-col p-4 md:p-6">
+<body class="flex flex-col p-4 md:p-6">
 
     <!-- HEADER AREA -->
     <header class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-6 glass-panel p-5 z-10 gap-4">
@@ -141,7 +112,7 @@
             <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gradient flex items-center gap-2">
                 ✨ Fath's Works Duty
             </h1>
-            <p class="font-medium text-sm text-gray-600 mt-1">Sistem Kanban Terpadu dengan Realtime Cloud.</p>
+            <p class="font-medium text-sm text-gray-600 mt-1">Manajemen Tugas Terpadu & Terhubung Cloud.</p>
         </div>
         
         <div class="flex flex-col sm:flex-row items-center gap-3 w-full xl:w-auto">
@@ -150,249 +121,145 @@
                 <button onclick="switchView('board')" id="btn-board" class="flex-1 sm:flex-none px-4 py-2 text-sm font-bold rounded-lg bg-white shadow-sm text-blue-600 transition-all flex items-center justify-center gap-1">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"></path></svg> Board
                 </button>
-                <button onclick="switchView('list')" id="btn-list" class="flex-1 sm:flex-none px-4 py-2 text-sm font-semibold rounded-lg text-gray-600 hover:bg-white/60 transition-all flex items-center justify-center gap-1">
+                <button onclick="switchView('list')" id="btn-list" class="flex-1 sm:flex-none px-4 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-white/60 transition-all flex items-center justify-center gap-1">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg> List
                 </button>
-                <button onclick="switchView('calendar')" id="btn-calendar" class="flex-1 sm:flex-none px-4 py-2 text-sm font-semibold rounded-lg text-gray-600 hover:bg-white/60 transition-all flex items-center justify-center gap-1">
+                <button onclick="switchView('calendar')" id="btn-calendar" class="flex-1 sm:flex-none px-4 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-white/60 transition-all flex items-center justify-center gap-1">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> Kalender
                 </button>
             </div>
 
-            <button onclick="openModal()" class="glass-button px-6 py-2.5 text-blue-600 shadow-sm w-full sm:w-auto flex items-center justify-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                Tambah
+            <button onclick="openModal()" class="glass-button px-6 py-2.5 text-blue-600 shadow-sm w-full sm:w-auto flex items-center justify-center gap-2 border-blue-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg> Tambah
             </button>
         </div>
     </header>
 
     <!-- FILTER AREA -->
     <div class="flex flex-col md:flex-row gap-3 mb-6 z-10 relative">
-        <input type="text" id="searchInput" oninput="renderApp()" placeholder="🔍 Cari rincian tugas..." class="glass-input p-3 flex-1 text-sm font-medium">
-        
+        <input type="text" id="searchInput" oninput="renderApp()" placeholder="🔍 Cari nama tugas..." class="glass-input p-3 flex-1 text-sm font-medium">
         <div class="relative w-full md:w-48">
-            <input type="month" id="filterMonth" onchange="renderApp()" class="glass-input p-3 w-full text-sm font-medium cursor-pointer" title="Pilih Bulan">
-            <button onclick="clearMonthFilter()" class="absolute right-2 top-3 text-gray-400 hover:text-red-500" title="Tampilkan Semua Waktu">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
+            <input type="month" id="filterMonth" onchange="renderApp()" class="glass-input p-3 w-full text-sm font-medium cursor-pointer" title="Filter Bulan">
+            <button onclick="clearMonthFilter()" class="absolute right-2 top-3 text-slate-400 hover:text-red-500"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
         </div>
-
-        <select id="filterType" onchange="renderApp()" class="glass-input p-3 w-full md:w-40 text-sm cursor-pointer font-medium">
-            <option value="Semua">Semua Tipe</option>
-            <option value="Sekali Jalan">Sekali Jalan</option>
-            <option value="Rutin Harian">Rutin Harian</option>
-            <option value="Rutin Bulanan">Rutin Bulanan</option>
+        <select id="filterType" onchange="renderApp()" class="glass-input p-3 w-full md:w-40 text-sm font-medium cursor-pointer">
+            <option value="Semua">Semua Tipe</option><option value="Sekali Jalan">Sekali Jalan</option>
+            <option value="Rutin Harian">Rutin Harian</option><option value="Rutin Bulanan">Rutin Bulanan</option>
         </select>
-        <select id="filterPriority" onchange="renderApp()" class="glass-input p-3 w-full md:w-40 text-sm cursor-pointer font-medium">
-            <option value="Semua">Prioritas</option>
-            <option value="Tinggi">Tinggi</option>
-            <option value="Sedang">Sedang</option>
-            <option value="Rendah">Rendah</option>
+        <select id="filterPriority" onchange="renderApp()" class="glass-input p-3 w-full md:w-40 text-sm font-medium cursor-pointer">
+            <option value="Semua">Prioritas</option><option value="Tinggi">Tinggi</option>
+            <option value="Sedang">Sedang</option><option value="Rendah">Rendah</option>
         </select>
     </div>
 
-    <!-- MAIN WORKSPACE CONTAINER -->
-    <div class="flex-1 flex flex-col relative w-full h-full">
+    <!-- WORKSPACE VIEWS -->
+    <div class="flex-1 w-full relative">
         
-        <!-- 1. KANBAN BOARD VIEW -->
-        <main id="view-board" class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-6 pb-6">
-            <div class="flex flex-col h-full glass-panel p-4">
-                <div class="flex justify-between items-center mb-4 px-2 border-b border-gray-300/50 pb-2">
-                    <div class="flex items-center gap-2">
-                        <span class="w-3 h-3 rounded-full bg-pink-400"></span>
-                        <h2 class="text-xl font-bold text-gray-800">To Do</h2>
-                    </div>
-                    <span id="count-todo" class="bg-white/70 px-2 py-0.5 rounded text-xs font-bold text-gray-700 shadow-sm">0</span>
+        <!-- 1. BOARD VIEW -->
+        <main id="view-board" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- To Do -->
+            <div class="flex flex-col glass-panel p-4 min-h-[500px]">
+                <div class="flex justify-between items-center mb-4 px-2">
+                    <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-slate-300"></span><h2 class="text-xl font-bold text-slate-800">To Do</h2></div>
+                    <span id="count-todo" class="bg-white/60 px-2 py-0.5 rounded text-xs font-bold text-slate-600">0</span>
                 </div>
-                <div id="todo-list" class="flex-1 space-y-4 px-1 pb-2 min-h-[200px]" ondrop="drop(event, 'todo')" ondragover="allowDrop(event)"></div>
+                <div id="todo-list" class="flex-1 space-y-3" ondrop="drop(event, 'todo')" ondragover="allowDrop(event)"></div>
             </div>
-
-            <div class="flex flex-col h-full glass-panel p-4">
-                <div class="flex justify-between items-center mb-4 px-2 border-b border-gray-300/50 pb-2">
-                    <div class="flex items-center gap-2">
-                        <span class="w-3 h-3 rounded-full bg-blue-400"></span>
-                        <h2 class="text-xl font-bold text-gray-800">In Progress</h2>
-                    </div>
-                    <span id="count-inprogress" class="bg-white/70 px-2 py-0.5 rounded text-xs font-bold text-gray-700 shadow-sm">0</span>
+            <!-- In Progress -->
+            <div class="flex flex-col glass-panel p-4 min-h-[500px]">
+                <div class="flex justify-between items-center mb-4 px-2">
+                    <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-blue-400"></span><h2 class="text-xl font-bold text-slate-800">In Progress</h2></div>
+                    <span id="count-inprogress" class="bg-white/60 px-2 py-0.5 rounded text-xs font-bold text-slate-600">0</span>
                 </div>
-                <div id="inprogress-list" class="flex-1 space-y-4 px-1 pb-2 min-h-[200px]" ondrop="drop(event, 'inprogress')" ondragover="allowDrop(event)"></div>
+                <div id="inprogress-list" class="flex-1 space-y-3" ondrop="drop(event, 'inprogress')" ondragover="allowDrop(event)"></div>
             </div>
-
-            <div class="flex flex-col h-full glass-panel p-4">
-                <div class="flex justify-between items-center mb-4 px-2 border-b border-gray-300/50 pb-2">
-                    <div class="flex items-center gap-2">
-                        <span class="w-3 h-3 rounded-full bg-green-400"></span>
-                        <h2 class="text-xl font-bold text-gray-800">Done</h2>
-                    </div>
-                    <span id="count-done" class="bg-white/70 px-2 py-0.5 rounded text-xs font-bold text-gray-700 shadow-sm">0</span>
+            <!-- Done -->
+            <div class="flex flex-col glass-panel p-4 min-h-[500px]">
+                <div class="flex justify-between items-center mb-4 px-2">
+                    <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-green-400"></span><h2 class="text-xl font-bold text-slate-800">Done</h2></div>
+                    <span id="count-done" class="bg-white/60 px-2 py-0.5 rounded text-xs font-bold text-slate-600">0</span>
                 </div>
-                <div id="done-list" class="flex-1 space-y-4 px-1 pb-2 min-h-[200px]" ondrop="drop(event, 'done')" ondragover="allowDrop(event)"></div>
+                <div id="done-list" class="flex-1 space-y-3" ondrop="drop(event, 'done')" ondragover="allowDrop(event)"></div>
             </div>
         </main>
 
         <!-- 2. LIST VIEW -->
-        <main id="view-list" class="hidden flex-1 pb-6 glass-panel p-4 md:p-6">
-            <div class="w-full text-left border-collapse">
-                <div class="grid grid-cols-12 gap-4 pb-3 border-b border-white/70 text-sm font-bold text-gray-600 uppercase tracking-wider px-4">
-                    <div class="col-span-6 md:col-span-5">Pekerjaan</div>
-                    <div class="col-span-3 md:col-span-2 hidden md:block">Status</div>
-                    <div class="col-span-3 md:col-span-2">Deadline</div>
-                    <div class="col-span-3 md:col-span-2 hidden md:block">Prioritas</div>
-                    <div class="col-span-3 md:col-span-1 text-right">Aksi</div>
-                </div>
-                <div id="list-container" class="mt-3 flex flex-col gap-2"></div>
-            </div>
+        <main id="view-list" class="hidden glass-panel p-4 md:p-6 min-h-[500px]">
+            <div id="list-container" class="flex flex-col gap-2"></div>
         </main>
 
         <!-- 3. CALENDAR VIEW -->
-        <main id="view-calendar" class="hidden flex-1 flex flex-col glass-panel p-4 pb-10">
+        <main id="view-calendar" class="hidden flex flex-col glass-panel p-4 min-h-[600px]">
             <div class="flex justify-between items-center mb-4">
-                <h2 id="calendar-month-year" class="text-xl font-extrabold text-gray-800">Bulan</h2>
+                <h2 id="calendar-month-year" class="text-xl font-extrabold text-slate-800 uppercase tracking-wide">Bulan</h2>
                 <div class="flex gap-2">
-                    <button onclick="changeCalendarMonth(-1)" class="glass-button p-2 text-gray-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
-                    <button onclick="changeCalendarMonth(1)" class="glass-button p-2 text-gray-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
+                    <button onclick="changeCalendarMonth(-1)" class="glass-button p-2 text-slate-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+                    <button onclick="changeCalendarMonth(1)" class="glass-button p-2 text-slate-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
                 </div>
             </div>
-            <div class="grid grid-cols-7 gap-1 text-center font-bold text-sm text-gray-600 mb-2">
-                <div>Min</div><div>Sen</div><div>Sel</div><div>Rab</div><div>Kam</div><div>Jum</div><div>Sab</div>
+            <div class="grid grid-cols-7 gap-1 text-center font-extrabold text-sm text-slate-400 mb-2">
+                <div class="text-red-400">Min</div><div>Sen</div><div>Sel</div><div>Rab</div><div>Kam</div><div>Jum</div><div class="text-red-400">Sab</div>
             </div>
-            <div id="calendar-grid" class="flex-1 grid grid-cols-7 grid-rows-5 gap-1 md:gap-2"></div>
+            <div id="calendar-grid" class="flex-1 grid grid-cols-7 auto-rows-[120px] gap-1 md:gap-2"></div>
         </main>
     </div>
 
-    <!-- MODAL PREVIEW TUGAS (GLASSMORPHISM) -->
-    <div id="previewModal" class="hidden fixed inset-0 bg-slate-900/40 z-50 justify-center items-center p-4 backdrop-blur-md overflow-y-auto py-10 transition-opacity">
-        <div class="glass-panel w-full max-w-3xl p-0 my-auto shadow-[0_10px_40px_-10px_rgba(0,0,0,0.3)] border-white/60 overflow-hidden flex flex-col">
-            <!-- Cover Header -->
-            <div id="previewCover" class="h-20 w-full relative flex items-end px-8 pb-3">
-                <button onclick="closePreviewModal()" class="absolute top-4 right-4 text-white/90 hover:text-white hover:bg-black/20 transition-colors p-1.5 bg-black/10 rounded-full backdrop-blur-sm">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-            </div>
-
+    <!-- PREVIEW MODAL -->
+    <div id="previewModal" class="hidden fixed inset-0 bg-slate-900/40 z-50 justify-center items-center p-4 backdrop-blur-sm overflow-y-auto transition-opacity">
+        <div class="glass-panel w-full max-w-2xl p-0 shadow-2xl border-white overflow-hidden flex flex-col relative my-8">
+            <div id="previewCover" class="h-16 w-full relative"><button onclick="closePreviewModal()" class="absolute top-3 right-4 text-white hover:bg-black/20 p-1.5 rounded-full transition-colors"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button></div>
+            
             <div class="p-8 pt-6">
-                <!-- Title & Copy Quick Action -->
-                <div class="flex justify-between items-start mb-4">
-                    <h2 id="previewTitle" class="text-3xl font-extrabold text-gray-800 pr-4 leading-tight">Judul Tugas</h2>
-                    <button onclick="copyTaskInfo()" class="text-gray-500 hover:text-blue-600 bg-white/40 hover:bg-white/80 p-2 rounded-lg transition-all text-sm font-semibold flex items-center gap-1 border border-white/50" title="Salin Info">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg> Salin
-                    </button>
-                </div>
-                
-                <!-- Layout 2 Kolom -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    
-                    <!-- KIRI: Deskripsi & Subtugas -->
+                <h2 id="previewTitle" class="text-3xl font-extrabold text-slate-800 pr-4 leading-tight mb-4">Judul Tugas</h2>
+                <div id="previewMeta" class="flex flex-wrap gap-2 mb-6 border-b border-white/50 pb-4"></div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="md:col-span-2 space-y-6">
                         <div>
-                            <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-2">
-                                <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg> Deskripsi
-                            </h3>
-                            <div id="previewDesc" class="text-slate-700 text-sm leading-relaxed bg-white/50 p-5 rounded-2xl border border-white whitespace-pre-wrap shadow-sm"></div>
+                            <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-2"><svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg> Deskripsi</h3>
+                            <div id="previewDesc" class="text-slate-700 text-sm leading-relaxed bg-white/50 p-4 rounded-xl border border-white whitespace-pre-wrap"></div>
                         </div>
-
-                        <div>
-                            <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-2">
-                                <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg> Daftar Periksa (Subtugas)
-                            </h3>
-                            
-                            <div id="previewProgressContainer" class="mb-3 flex items-center gap-2 hidden">
-                                <div class="flex-1 h-2 bg-slate-200/50 rounded-full overflow-hidden">
-                                    <div id="previewProgressBar" class="h-full bg-blue-500 transition-all duration-500" style="width: 0%"></div>
-                                </div>
+                        <div id="previewSubtaskSection">
+                            <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-2"><svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg> Daftar Periksa</h3>
+                            <div id="previewProgressContainer" class="mb-3 flex items-center gap-2">
+                                <div class="flex-1 h-2 bg-white/50 rounded-full overflow-hidden border border-white"><div id="previewProgressBar" class="h-full bg-blue-500 transition-all duration-500"></div></div>
                                 <span id="previewProgressText" class="text-xs font-bold text-slate-500">0%</span>
                             </div>
-
-                            <!-- Area Checklist -->
                             <div id="previewSubtasks" class="space-y-2"></div>
-
-                            <!-- Empty State Checklist -->
-                            <div id="previewSubtaskEmpty" class="hidden bg-white/30 border border-dashed border-slate-300 p-4 rounded-xl text-center">
-                                <p class="text-xs font-medium text-slate-500">Tidak ada checklist untuk tugas ini.</p>
-                            </div>
                         </div>
                     </div>
-
-                    <!-- KANAN: Atribut (Status, Waktu, Prioritas) -->
-                    <div class="space-y-4">
-                        <div class="bg-white/60 p-5 rounded-2xl border border-white shadow-sm space-y-5">
-                            
-                            <!-- Status -->
-                            <div>
-                                <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Status</span>
-                                <div id="previewStatusBadge" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-bold">
-                                    <!-- Indikator statis via JS -->
-                                </div>
-                            </div>
-
-                            <!-- Prioritas (Dengan Efek Lampu LED Berkepip) -->
-                            <div>
-                                <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Prioritas</span>
-                                <div id="previewPriorityDiv" class="flex items-center gap-2 font-bold text-slate-700">
-                                    <div id="previewPriorityLED" class="w-3 h-3 rounded-full"></div>
-                                    <span id="previewPriorityText">-</span>
-                                </div>
-                            </div>
-
-                            <hr class="border-slate-200">
-
-                            <!-- Estimasi & Waktu -->
-                            <div>
-                                <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Estimasi Pengerjaan</span>
-                                <span id="previewEstimate" class="text-sm font-semibold text-slate-700">-</span>
-                            </div>
-
-                            <div>
-                                <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Tenggat Waktu</span>
-                                <span id="previewDeadlineText" class="text-sm font-bold text-slate-800">-</span>
-                            </div>
-
-                            <!-- Pesan Sisa Waktu (Alert Box) -->
-                            <div id="previewTimeAlert" class="p-3 rounded-xl border text-sm font-bold shadow-sm"></div>
-
-                        </div>
+                    <div class="bg-white/40 p-4 rounded-xl border border-white h-fit space-y-4">
+                        <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wider mb-1">Status Waktu</h3>
+                        <div id="previewTimeLeft" class="text-sm font-bold p-3 rounded-lg text-center shadow-sm"></div>
+                        <div><span class="block text-xs text-slate-500 mb-1">Total Hari Pengerjaan</span><span id="previewDuration" class="text-sm font-bold text-slate-800"></span></div>
                     </div>
                 </div>
 
-                <!-- Aksi Bawah -->
-                <div class="flex gap-3 pt-6 mt-6 border-t border-slate-200/50">
+                <div class="flex gap-3 pt-6 border-t border-white/50 mt-6">
                     <input type="hidden" id="previewTaskId">
-                    <button type="button" onclick="closePreviewModal()" class="flex-1 glass-button py-3 text-slate-600">Tutup</button>
-                    <button type="button" onclick="editFromPreview()" class="flex-1 bg-gradient-to-r from-blue-500 to-sky-500 text-white rounded-xl font-bold py-3 shadow-lg hover:shadow-xl hover:opacity-90 transition-all flex justify-center items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg> Edit Tugas
-                    </button>
+                    <button type="button" onclick="copyTaskInfo()" class="glass-button px-4 py-3 text-slate-600 hover:text-blue-600" title="Salin Info Tugas"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg></button>
+                    <button type="button" onclick="editFromPreview()" class="flex-1 bg-gradient-to-r from-blue-500 to-sky-500 text-white rounded-xl font-bold py-3 shadow-lg hover:shadow-xl hover:opacity-90 transition-all flex justify-center items-center gap-2">Edit Jadwal</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MODAL FORM CREATE / EDIT -->
-    <div id="taskModal" class="hidden fixed inset-0 bg-slate-900/40 z-50 justify-center items-center p-4 backdrop-blur-sm overflow-y-auto py-10 transition-opacity">
-        <div class="glass-panel w-full max-w-2xl p-8 my-auto shadow-2xl border-white/80">
+    <!-- FORM ADD/EDIT MODAL -->
+    <div id="taskModal" class="hidden fixed inset-0 bg-slate-900/40 z-50 justify-center items-center p-4 backdrop-blur-sm overflow-y-auto transition-opacity py-10">
+        <div class="glass-panel w-full max-w-2xl p-8 shadow-2xl border-white my-auto">
             <div class="flex justify-between items-center mb-6">
                 <h2 id="modalTitle" class="text-2xl font-extrabold text-slate-800">📝 Jadwal Baru</h2>
-                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-800 transition-colors p-1 bg-white/50 rounded-full">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
+                <button onclick="closeModal()" class="text-slate-400 hover:bg-white/50 p-1.5 rounded-full"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
             
             <form id="taskForm" onsubmit="saveTask(event)" class="space-y-5">
-                <input type="hidden" id="editTaskId">
-                <input type="hidden" id="taskCreatedDate">
-
+                <input type="hidden" id="editTaskId"><input type="hidden" id="taskCreatedDate">
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-1">Judul Pekerjaan</label>
-                    <input type="text" id="taskTitle" required class="w-full glass-input p-3 text-base font-bold text-slate-800" placeholder="Contoh: Menyusun laporan keuangan">
+                    <input type="text" id="taskTitle" required class="w-full glass-input p-3 font-bold text-slate-800">
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1">Tenggat Waktu</label>
-                        <input type="date" id="taskDeadline" required class="w-full glass-input p-3 text-sm cursor-pointer text-slate-800">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1">Estimasi Pengerjaan (Opsional)</label>
-                        <input type="text" id="taskEstimate" class="w-full glass-input p-3 text-sm text-slate-800" placeholder="Cth: 2 Jam, 1 Hari">
-                    </div>
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-1">Tipe Pekerjaan</label>
                         <select id="taskType" class="w-full glass-input p-3 text-sm cursor-pointer">
@@ -409,56 +276,63 @@
                             <option value="Tinggi">Tinggi</option>
                         </select>
                     </div>
-                    <!-- Status disembunyikan saat buat baru, tapi ada di form (di-set via JS) -->
-                    <input type="hidden" id="taskStatus" value="todo"> 
                 </div>
+
+                <!-- Bagian Penjadwalan Custom (Mini Kalender Interaktif) -->
+                <div class="bg-white/40 p-4 rounded-xl border border-white/60">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-sm font-bold text-slate-700 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> Waktu & Hari Pengerjaan
+                        </h3>
+                        <div class="text-xs font-bold text-slate-600 bg-white/70 px-2 py-1 rounded-lg shadow-sm border border-white">
+                            Total: <span id="taskDurationText" class="text-blue-600 font-extrabold text-sm">0</span> Hari
+                        </div>
+                    </div>
+                    
+                    <div class="glass-input p-3">
+                        <!-- Header Mini Kalender -->
+                        <div class="flex justify-between items-center mb-3 px-1 border-b border-white pb-2">
+                            <button type="button" onclick="changeMiniCal(-1)" class="p-1 hover:bg-white/70 rounded-lg text-slate-600 transition-colors bg-white/40"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+                            <span id="miniCalTitle" class="text-sm font-bold text-slate-800 uppercase tracking-wide">Juni 2026</span>
+                            <button type="button" onclick="changeMiniCal(1)" class="p-1 hover:bg-white/70 rounded-lg text-slate-600 transition-colors bg-white/40"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
+                        </div>
+                        
+                        <!-- Grid Mini Kalender -->
+                        <div class="grid grid-cols-7 gap-1 text-center text-xs font-extrabold text-slate-400 mb-2">
+                            <div class="text-red-400">Min</div><div>Sen</div><div>Sel</div><div>Rab</div><div>Kam</div><div>Jum</div><div class="text-red-400">Sab</div>
+                        </div>
+                        <div id="miniCalGrid" class="grid grid-cols-7 gap-1 text-center text-sm">
+                            <!-- Diisi via JS -->
+                        </div>
+                    </div>
+                    <p class="text-[10px] font-medium text-slate-500 mt-3 leading-relaxed">*Pilih hari dengan mengeklik angka pada kalender di atas. Anda bisa memilih hari secara melompat-lompat (contoh: hanya hari Senin dan Rabu).</p>
+                </div>
+                
+                <input type="hidden" id="taskStatus" value="todo"> 
 
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Warna Cover (Tag Visual)</label>
                     <div class="flex gap-3 flex-wrap">
-                        <label class="cursor-pointer relative">
-                            <input type="radio" name="taskColor" value="bg-slate-200" checked class="sr-only color-radio">
-                            <div class="w-8 h-8 rounded-full bg-slate-200 border border-slate-300 shadow-sm transition-transform"></div>
-                        </label>
-                        <label class="cursor-pointer relative">
-                            <input type="radio" name="taskColor" value="bg-blue-400" class="sr-only color-radio">
-                            <div class="w-8 h-8 rounded-full bg-blue-400 shadow-sm transition-transform"></div>
-                        </label>
-                        <label class="cursor-pointer relative">
-                            <input type="radio" name="taskColor" value="bg-sky-400" class="sr-only color-radio">
-                            <div class="w-8 h-8 rounded-full bg-sky-400 shadow-sm transition-transform"></div>
-                        </label>
-                        <label class="cursor-pointer relative">
-                            <input type="radio" name="taskColor" value="bg-green-400" class="sr-only color-radio">
-                            <div class="w-8 h-8 rounded-full bg-green-400 shadow-sm transition-transform"></div>
-                        </label>
-                        <label class="cursor-pointer relative">
-                            <input type="radio" name="taskColor" value="bg-amber-400" class="sr-only color-radio">
-                            <div class="w-8 h-8 rounded-full bg-amber-400 shadow-sm transition-transform"></div>
-                        </label>
-                        <label class="cursor-pointer relative">
-                            <input type="radio" name="taskColor" value="bg-rose-400" class="sr-only color-radio">
-                            <div class="w-8 h-8 rounded-full bg-rose-400 shadow-sm transition-transform"></div>
-                        </label>
-                        <label class="cursor-pointer relative">
-                            <input type="radio" name="taskColor" value="bg-fuchsia-400" class="sr-only color-radio">
-                            <div class="w-8 h-8 rounded-full bg-fuchsia-400 shadow-sm transition-transform"></div>
-                        </label>
+                        <label class="cursor-pointer relative"><input type="radio" name="taskColor" value="bg-slate-200" checked class="sr-only color-radio"><div class="w-8 h-8 rounded-full bg-slate-200 border border-white shadow-sm transition-transform"></div></label>
+                        <label class="cursor-pointer relative"><input type="radio" name="taskColor" value="bg-red-400" class="sr-only color-radio"><div class="w-8 h-8 rounded-full bg-red-400 shadow-sm transition-transform"></div></label>
+                        <label class="cursor-pointer relative"><input type="radio" name="taskColor" value="bg-amber-400" class="sr-only color-radio"><div class="w-8 h-8 rounded-full bg-amber-400 shadow-sm transition-transform"></div></label>
+                        <label class="cursor-pointer relative"><input type="radio" name="taskColor" value="bg-emerald-400" class="sr-only color-radio"><div class="w-8 h-8 rounded-full bg-emerald-400 shadow-sm transition-transform"></div></label>
+                        <label class="cursor-pointer relative"><input type="radio" name="taskColor" value="bg-blue-400" class="sr-only color-radio"><div class="w-8 h-8 rounded-full bg-blue-400 shadow-sm transition-transform"></div></label>
+                        <label class="cursor-pointer relative"><input type="radio" name="taskColor" value="bg-purple-400" class="sr-only color-radio"><div class="w-8 h-8 rounded-full bg-purple-400 shadow-sm transition-transform"></div></label>
+                        <label class="cursor-pointer relative"><input type="radio" name="taskColor" value="bg-pink-400" class="sr-only color-radio"><div class="w-8 h-8 rounded-full bg-pink-400 shadow-sm transition-transform"></div></label>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Catatan</label>
-                    <textarea id="taskDesc" rows="3" class="w-full glass-input p-3 text-sm resize-none" placeholder="Tambahkan rincian..."></textarea>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Catatan Komprehensif</label>
+                    <textarea id="taskDesc" rows="3" class="w-full glass-input p-3 text-sm resize-none"></textarea>
                 </div>
 
-                <!-- KOLOM SUBTUGAS -->
                 <div class="glass-input overflow-hidden">
-                    <button type="button" onclick="toggleSubtaskSection()" class="w-full p-3 font-semibold text-slate-700 flex justify-between items-center hover:bg-white/40 transition-colors">
+                    <button type="button" onclick="toggleSubtaskSection()" class="w-full p-3 font-semibold text-slate-700 flex justify-between items-center hover:bg-white/40">
                         <span class="flex items-center gap-2"><svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg> Kelola Checklist</span>
                         <svg id="subtaskChevron" class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
-                    
                     <div id="subtaskContainer" class="hidden p-4 border-t border-white/50 bg-white/30">
                         <div id="subtaskList" class="mb-3 space-y-2 pr-1 max-h-48 overflow-y-auto"></div>
                         <div class="flex gap-2">
@@ -468,7 +342,7 @@
                     </div>
                 </div>
 
-                <div class="flex gap-3 pt-2">
+                <div class="flex gap-3 pt-4 border-t border-white/50">
                     <button type="button" onclick="closeModal()" class="flex-1 glass-button py-3 text-slate-600">Batal</button>
                     <button type="submit" id="submitBtn" class="flex-1 bg-gradient-to-r from-blue-500 to-sky-500 text-white rounded-xl font-bold py-3 shadow-lg hover:shadow-xl hover:opacity-90 transition-all">Simpan</button>
                 </div>
@@ -476,24 +350,21 @@
         </div>
     </div>
 
-    <!-- MODAL DELETE -->
-    <div id="deleteModal" class="hidden fixed inset-0 bg-slate-900/40 z-[60] justify-center items-center p-4 backdrop-blur-sm transition-opacity">
-        <div class="glass-panel w-full max-w-sm p-6 text-center border-red-200 shadow-[0_8px_32px_rgba(239,68,68,0.2)]">
-            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
-                <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-            </div>
+    <!-- DELETE MODAL -->
+    <div id="deleteModal" class="hidden fixed inset-0 bg-slate-900/40 z-50 justify-center items-center p-4 backdrop-blur-sm transition-opacity">
+        <div class="glass-panel w-full max-w-sm p-6 text-center border-red-200">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4"><svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg></div>
             <h3 class="text-lg font-bold text-slate-900 mb-2">Hapus Jadwal?</h3>
-            <p class="text-sm text-slate-500 mb-6">Tindakan ini tidak dapat dibatalkan.</p>
+            <p class="text-sm text-slate-500 mb-6">Jadwal akan dihapus permanen.</p>
             <div class="flex gap-3">
                 <button onclick="closeDeleteModal()" class="flex-1 glass-button py-2 text-slate-600">Batal</button>
-                <button onclick="confirmDelete()" class="flex-1 bg-red-500 text-white rounded-xl font-bold py-2 shadow hover:bg-red-600 transition-colors">Hapus</button>
+                <button onclick="confirmDelete()" class="flex-1 bg-red-500 text-white rounded-xl font-bold py-2 shadow hover:bg-red-600 transition-colors">Ya, Hapus</button>
             </div>
         </div>
     </div>
 
-
     <script>
-        // KONFIGURASI FIREBASE KREDENSIAL ANDA
+        // 0. FIREBASE REALTIME DB CONFIGURATION
         const firebaseConfig = {
             apiKey: "AIzaSyA17rN56mr3e-qQi4GW-pR9tWK_Sz4PK34",
             authDomain: "faths-work-duty.firebaseapp.com",
@@ -502,8 +373,7 @@
             messagingSenderId: "1021350807893",
             appId: "1:1021350807893:web:4a13adf5bcdb322e9447dc"
         };
-
-        // Inisialisasi Firebase & Firestore
+        
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
@@ -512,97 +382,137 @@
         let currentSubtasks = [];
         let taskToDeleteId = null;
         let activeMenuId = null; 
-        
         let currentView = 'board'; 
         let currentMonth = new Date().getMonth();
         let currentYear = new Date().getFullYear();
 
-        // SINKRONISASI REAL-TIME DARI CLOUD
+        // Variabel untuk Mini Kalender (Form Input)
+        let selectedTaskDates = [];
+        let miniCalMonth = new Date().getMonth();
+        let miniCalYear = new Date().getFullYear();
+
+        // DAFTAR HARI LIBUR NASIONAL 2024-2026 (Contoh beberapa hari penting)
+        const nationalHolidays = [
+            "2026-01-01", "2026-02-17", "2026-03-20", "2026-04-10", "2026-05-01", 
+            "2026-05-14", "2026-06-01", "2026-08-17", "2026-12-25"
+        ];
+
+        // REAL-TIME LISTENER DARI FIREBASE
         db.collection("workJourney").doc("myTasks").onSnapshot((doc) => {
             if (doc.exists) {
                 tasks = doc.data().tasks || [];
+                renderApp();
             } else {
                 tasks = [];
+                renderApp();
             }
-            renderApp();
-        }, (error) => {
-            console.error("Gagal menarik data dari Cloud:", error);
-            // Fallback (Ambil dari local)
-            const backup = localStorage.getItem('fathsWorkDuty_backup');
-            if(backup) tasks = JSON.parse(backup);
-            renderApp();
         });
 
-        // -----------------------------------------------------
-        // FUNGSI PENYIMPANAN
-        // -----------------------------------------------------
         function saveToStorage() {
-            db.collection("workJourney").doc("myTasks").set({
-                tasks: tasks
-            }).catch((error) => {
-                console.error("Gagal simpan ke cloud: ", error);
-                localStorage.setItem('fathsWorkDuty_backup', JSON.stringify(tasks));
-            });
+            db.collection("workJourney").doc("myTasks").set({ tasks: tasks })
+            .catch(() => localStorage.setItem('fathsWorkDuty_backup', JSON.stringify(tasks)));
         }
 
-        // -----------------------------------------------------
-        // OTOMATISASI (AUTOMATION)
-        // -----------------------------------------------------
+        function renderMiniCalendar() {
+            const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            document.getElementById('miniCalTitle').innerText = `${monthNames[miniCalMonth]} ${miniCalYear}`;
+            const grid = document.getElementById('miniCalGrid');
+            grid.innerHTML = '';
+
+            const firstDay = new Date(miniCalYear, miniCalMonth, 1).getDay(); 
+            const daysInMonth = new Date(miniCalYear, miniCalMonth + 1, 0).getDate();
+
+            for(let i = 0; i < firstDay; i++) {
+                grid.innerHTML += `<div class="p-1.5 opacity-0"></div>`;
+            }
+
+            for(let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${miniCalYear}-${String(miniCalMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const dayDate = new Date(dateStr);
+                
+                const isWeekend = dayDate.getDay() === 0 || dayDate.getDay() === 6;
+                const isHoliday = nationalHolidays.includes(dateStr);
+                const isRedDay = isWeekend || isHoliday;
+                const isSelected = selectedTaskDates.includes(dateStr);
+                
+                let cellClass = "p-1.5 rounded-lg cursor-pointer transition-all border font-bold ";
+                if (isSelected) {
+                    cellClass += "bg-blue-500 text-white border-blue-500 shadow-md transform scale-110";
+                } else {
+                    cellClass += "hover:bg-white/80 hover:border-blue-300 bg-white/40 border-transparent ";
+                    cellClass += isRedDay ? "text-red-500" : "text-slate-700";
+                }
+
+                grid.innerHTML += `<div onclick="toggleTaskDate('${dateStr}')" class="${cellClass}">${day}</div>`;
+            }
+            
+            document.getElementById('taskDurationText').innerText = selectedTaskDates.length;
+        }
+
+        function changeMiniCal(offset) {
+            miniCalMonth += offset;
+            if(miniCalMonth < 0) { miniCalMonth = 11; miniCalYear--; }
+            if(miniCalMonth > 11) { miniCalMonth = 0; miniCalYear++; }
+            renderMiniCalendar();
+        }
+
+        function toggleTaskDate(dateStr) {
+            if(selectedTaskDates.includes(dateStr)) {
+                selectedTaskDates = selectedTaskDates.filter(d => d !== dateStr);
+            } else {
+                selectedTaskDates.push(dateStr);
+            }
+            selectedTaskDates.sort(); // Urutkan tanggal dari awal sampai akhir
+            renderMiniCalendar();
+        }
+
+        // TAMPILAN VIEW
+        function switchView(view) {
+            currentView = view;
+            ['board', 'list', 'calendar'].forEach(v => {
+                const btn = document.getElementById(`btn-${v}`);
+                const container = document.getElementById(`view-${v}`);
+                if(v === view) {
+                    btn.classList.replace('text-slate-600', 'text-blue-600');
+                    btn.classList.add('bg-white', 'shadow-sm');
+                    btn.classList.remove('hover:bg-white/60');
+                    container.classList.remove('hidden');
+                } else {
+                    btn.classList.replace('text-blue-600', 'text-slate-600');
+                    btn.classList.remove('bg-white', 'shadow-sm');
+                    btn.classList.add('hover:bg-white/60');
+                    container.classList.add('hidden');
+                }
+            });
+            renderApp();
+        }
+
+        function clearMonthFilter() { document.getElementById('filterMonth').value = ''; renderApp(); }
+
         function runAutomations() {
             const today = new Date().toISOString().split('T')[0];
             let modified = false;
             tasks.forEach(task => {
                 if (task.status === 'done' && task.subtasks && task.subtasks.length > 0) {
-                    const uncompleted = task.subtasks.some(s => !s.completed);
-                    if (uncompleted) {
+                    if (task.subtasks.some(s => !s.completed)) {
                         task.subtasks.forEach(s => s.completed = true);
                         modified = true;
                     }
+                }
+                const taskEnd = task.selectedDates && task.selectedDates.length > 0 ? task.selectedDates[task.selectedDates.length - 1] : task.deadline;
+                if (task.status !== 'done' && taskEnd && taskEnd < today && task.priority !== 'Tinggi') {
+                    task.priority = 'Tinggi'; modified = true;
                 }
             });
             if (modified) saveToStorage();
         }
 
-        // -----------------------------------------------------
-        // LOGIKA TAMPILAN & FILTER
-        // -----------------------------------------------------
-        function switchView(view) {
-            currentView = view;
-            ['board', 'list', 'calendar'].forEach(v => {
-                const btn = document.getElementById(`btn-${v}`);
-                if(v === view) {
-                    btn.classList.replace('text-gray-600', 'text-blue-600');
-                    btn.classList.add('bg-white', 'shadow-sm');
-                    btn.classList.remove('hover:bg-white/60');
-                } else {
-                    btn.classList.replace('text-blue-600', 'text-gray-600');
-                    btn.classList.remove('bg-white', 'shadow-sm');
-                    btn.classList.add('hover:bg-white/60');
-                }
-                const container = document.getElementById(`view-${v}`);
-                if(v === view) container.classList.remove('hidden');
-                else container.classList.add('hidden');
-            });
-            renderApp();
-        }
-
-        function clearMonthFilter() {
-            document.getElementById('filterMonth').value = '';
-            renderApp();
-        }
-
         function renderApp() {
-            runAutomations(); 
-
-            const searchInput = document.getElementById('searchInput');
-            const filterTypeInput = document.getElementById('filterType');
-            const filterPriorityInput = document.getElementById('filterPriority');
-            const filterMonthInput = document.getElementById('filterMonth');
-            
-            const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
-            const filterType = filterTypeInput ? filterTypeInput.value : 'Semua';
-            const filterPriority = filterPriorityInput ? filterPriorityInput.value : 'Semua';
-            const filterMonthVal = filterMonthInput ? filterMonthInput.value : '';
+            runAutomations();
+            const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
+            const filterType = document.getElementById('filterType')?.value || 'Semua';
+            const filterPriority = document.getElementById('filterPriority')?.value || 'Semua';
+            const filterMonthVal = document.getElementById('filterMonth')?.value || '';
 
             let filteredTasks = tasks.filter(task => {
                 const matchSearch = task.title.toLowerCase().includes(searchTerm) || (task.description && task.description.toLowerCase().includes(searchTerm));
@@ -610,22 +520,20 @@
                 const matchPriority = filterPriority === 'Semua' || task.priority === filterPriority;
                 
                 let matchMonth = true;
-                if (filterMonthVal && task.deadline) {
-                    const taskMonth = task.deadline.substring(0, 7);
-                    matchMonth = taskMonth === filterMonthVal;
-                }
+                const taskEnd = task.selectedDates && task.selectedDates.length > 0 ? task.selectedDates[task.selectedDates.length - 1] : task.deadline;
+                if (filterMonthVal && taskEnd) matchMonth = taskEnd.substring(0, 7) === filterMonthVal;
+                
                 return matchSearch && matchType && matchPriority && matchMonth;
             });
 
             filteredTasks.sort((a, b) => {
                 if (a.status !== 'done' && b.status === 'done') return -1;
                 if (a.status === 'done' && b.status !== 'done') return 1;
-                
                 const prioWeight = {'Tinggi': 3, 'Sedang': 2, 'Rendah': 1};
-                if (prioWeight[b.priority] !== prioWeight[a.priority]) {
-                    return prioWeight[b.priority] - prioWeight[a.priority];
-                }
-                return new Date(a.deadline) - new Date(b.deadline);
+                if (prioWeight[b.priority] !== prioWeight[a.priority]) return prioWeight[b.priority] - prioWeight[a.priority];
+                const aEnd = a.selectedDates && a.selectedDates.length > 0 ? a.selectedDates[a.selectedDates.length-1] : (a.deadline || '9999-12-31');
+                const bEnd = b.selectedDates && b.selectedDates.length > 0 ? b.selectedDates[b.selectedDates.length-1] : (b.deadline || '9999-12-31');
+                return new Date(aEnd) - new Date(bEnd);
             });
 
             if (currentView === 'board') renderBoard(filteredTasks);
@@ -633,9 +541,6 @@
             else if (currentView === 'calendar') renderCalendar(filteredTasks); 
         }
 
-        // -----------------------------------------------------
-        // RENDER BOARD (KANBAN)
-        // -----------------------------------------------------
         function renderBoard(filteredTasks) {
             const lists = { 'todo': '', 'inprogress': '', 'done': '' };
             const counts = { 'todo': 0, 'inprogress': 0, 'done': 0 };
@@ -643,421 +548,178 @@
 
             filteredTasks.forEach(task => {
                 counts[task.status]++;
-                
-                let isOverdue = task.status !== 'done' && task.deadline < today;
-                let isToday = task.status !== 'done' && task.deadline === today;
-                
-                let subtaskHtml = '';
+                const taskEnd = task.selectedDates && task.selectedDates.length > 0 ? task.selectedDates[task.selectedDates.length-1] : task.deadline;
+                const isOverdue = task.status !== 'done' && taskEnd < today;
+                const isToday = task.status !== 'done' && taskEnd === today;
+
+                let subHtml = '';
                 if(task.subtasks && task.subtasks.length > 0) {
                     const completed = task.subtasks.filter(s => s.completed).length;
-                    const total = task.subtasks.length;
-                    const progressColor = completed === total ? 'bg-green-500' : 'bg-blue-500';
-                    const progressPercent = (completed / total) * 100;
-                    
-                    subtaskHtml = `
-                        <div class="mt-3 flex items-center gap-2">
-                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
-                            <div class="flex-1 h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                                <div class="h-full ${progressColor} transition-all duration-500" style="width: ${progressPercent}%"></div>
-                            </div>
-                        </div>
-                    `;
+                    const pct = (completed / task.subtasks.length) * 100;
+                    subHtml = `<div class="mt-3"><div class="h-1.5 bg-slate-200 rounded-full overflow-hidden"><div class="h-full bg-blue-500" style="width: ${pct}%"></div></div></div>`;
                 }
 
-                let alertBadge = '';
-                if(isOverdue) alertBadge = `<div class="absolute top-2 right-2 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md z-10">TERLAMBAT</div>`;
-                else if(isToday) alertBadge = `<div class="absolute top-2 right-2 bg-amber-400 text-amber-900 text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md z-10">HARI INI</div>`;
+                let prioDot = '';
+                if(task.priority === 'Tinggi') prioDot = `<span class="w-3 h-3 rounded-full bg-red-500 border-2 border-white shadow animate-pulse" title="Tinggi"></span>`;
+                else if(task.priority === 'Sedang') prioDot = `<span class="w-3 h-3 rounded-full bg-yellow-400 border-2 border-white shadow animate-pulse" title="Sedang"></span>`;
+                else prioDot = `<span class="w-3 h-3 rounded-full bg-green-500 border-2 border-white shadow" title="Rendah"></span>`;
 
-                const coverColor = task.color && task.color !== 'bg-slate-200' ? `<div class="h-2 w-full ${task.color} absolute top-0 left-0"></div>` : '';
-
-                // Efek Pulse Lampu LED untuk Prioritas di Kartu
-                let ledPulse = '';
-                if(task.priority === 'Tinggi') ledPulse = 'pulse-high bg-red-500';
-                else if(task.priority === 'Sedang') ledPulse = 'pulse-medium bg-amber-400';
-                else ledPulse = 'bg-green-500';
-
+                const coverColor = task.color || 'bg-slate-200';
+                
                 lists[task.status] += `
-                    <div id="${task.id}" class="glass-card p-4 pt-5 relative group" draggable="true" ondragstart="drag(event)" onclick="openPreviewModal('${task.id}')">
-                        ${coverColor}
-                        ${alertBadge}
-                        <h3 class="font-bold text-slate-800 text-base leading-tight mb-2 pr-6">${task.title}</h3>
-                        
-                        <div class="flex flex-wrap gap-2 items-center mb-3">
-                            <span class="flex items-center gap-1.5 bg-white/60 border border-slate-200 px-2 py-0.5 rounded text-xs font-bold text-slate-600 shadow-sm">
-                                <div class="w-2 h-2 rounded-full ${ledPulse}"></div> ${task.priority}
-                            </span>
-                            <span class="text-xs font-semibold text-slate-500 flex items-center bg-white/60 px-1.5 py-0.5 rounded border border-transparent"><svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>${formatDate(task.deadline)}</span>
+                    <div id="${task.id}" class="glass-card relative group pt-3 pb-4 px-4" draggable="true" ondragstart="drag(event)" onclick="openPreviewModal('${task.id}')">
+                        <div class="absolute inset-x-0 top-0 h-2 rounded-t-2xl overflow-hidden ${coverColor}"></div>
+                        <div class="flex justify-between items-start mb-2 mt-2">
+                            <div class="flex items-center gap-2">${prioDot} <span class="text-xs font-bold text-slate-500 bg-white/60 px-2 py-0.5 rounded">${formatDate(taskEnd)}</span></div>
+                            <div class="relative" onclick="event.stopPropagation()">
+                                <button onclick="toggleCardMenu(event, '${task.id}')" class="text-slate-400 hover:text-slate-800 p-1"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg></button>
+                                ${buildMenuOptions(task)}
+                            </div>
                         </div>
-                        ${subtaskHtml}
-
-                        <!-- Menu Titik 3 - Fix z-index issue -->
-                        <div class="absolute bottom-2 right-2 z-20" onclick="event.stopPropagation()">
-                            <button onclick="toggleCardMenu(event, '${task.id}')" class="text-slate-400 hover:text-slate-800 bg-white/50 hover:bg-white p-1 rounded-md transition-colors shadow-sm">
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
-                            </button>
-                            ${buildMenuOptions(task)}
-                        </div>
+                        <h3 class="font-bold text-slate-800 text-base mb-1">${task.title}</h3>
+                        ${isOverdue ? '<span class="text-[10px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded">TERLAMBAT</span>' : ''}
+                        ${isToday ? '<span class="text-[10px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">HARI INI</span>' : ''}
+                        ${subHtml}
                     </div>
                 `;
             });
 
-            document.getElementById('todo-list').innerHTML = lists.todo || getEmptyStateHtml();
-            document.getElementById('inprogress-list').innerHTML = lists.inprogress || getEmptyStateHtml();
-            document.getElementById('done-list').innerHTML = lists.done || getEmptyStateHtml();
-            
-            document.getElementById('count-todo').innerText = counts.todo;
-            document.getElementById('count-inprogress').innerText = counts.inprogress;
-            document.getElementById('count-done').innerText = counts.done;
+            const emptyStr = `<div class="text-center p-6 opacity-50 text-slate-500 text-sm font-bold border-2 border-dashed border-slate-300 rounded-xl">Kosong</div>`;
+            document.getElementById('todo-list').innerHTML = lists.todo || emptyStr;
+            document.getElementById('inprogress-list').innerHTML = lists.inprogress || emptyStr;
+            document.getElementById('done-list').innerHTML = lists.done || emptyStr;
+            document.getElementById('count-todo').innerText = counts.todo; document.getElementById('count-inprogress').innerText = counts.inprogress; document.getElementById('count-done').innerText = counts.done;
         }
 
-        // -----------------------------------------------------
-        // RENDER LIST (DAFTAR)
-        // -----------------------------------------------------
         function renderList(filteredTasks) {
             const container = document.getElementById('list-container');
-            if (filteredTasks.length === 0) {
-                container.innerHTML = getEmptyStateHtml("Tidak ada tugas yang sesuai filter.");
-                return;
-            }
-
+            if (filteredTasks.length === 0) { container.innerHTML = `<div class="text-center p-8 text-slate-500 font-bold">Tidak ada jadwal ditemukan.</div>`; return; }
             let html = '';
-            filteredTasks.forEach(task => {
-                let statusBadge = '';
-                if(task.status === 'todo') statusBadge = '<span class="px-2 py-1 text-xs font-bold rounded bg-pink-100 text-pink-700">To Do</span>';
-                if(task.status === 'inprogress') statusBadge = '<span class="px-2 py-1 text-xs font-bold rounded bg-blue-100 text-blue-700">In Progress</span>';
-                if(task.status === 'done') statusBadge = '<span class="px-2 py-1 text-xs font-bold rounded bg-green-100 text-green-700">Done</span>';
-
-                // Lampu LED Mini
-                let ledPulse = task.priority === 'Tinggi' ? 'pulse-high bg-red-500' : (task.priority === 'Sedang' ? 'pulse-medium bg-amber-400' : 'bg-green-500');
-                let colorClass = task.color || 'bg-slate-200';
-
-                html += `
-                    <div class="list-row rounded-xl p-3 flex items-center cursor-pointer group" onclick="openPreviewModal('${task.id}')">
-                        <div class="grid grid-cols-12 gap-4 w-full items-center px-2">
-                            <div class="col-span-6 md:col-span-5 flex items-center gap-3">
-                                <div class="w-2 h-10 rounded-full ${colorClass} shrink-0"></div>
-                                <div class="truncate">
-                                    <h3 class="font-bold text-slate-800 text-sm truncate">${task.title}</h3>
-                                    <span class="text-xs text-slate-500">${task.type}</span>
-                                </div>
-                            </div>
-                            <div class="col-span-3 md:col-span-2 hidden md:block">${statusBadge}</div>
-                            <div class="col-span-3 md:col-span-2 text-sm font-medium text-slate-600">${formatDate(task.deadline)}</div>
-                            <div class="col-span-3 md:col-span-2 hidden md:block text-sm font-bold text-slate-600 flex items-center gap-1.5"><div class="w-2 h-2 rounded-full inline-block ${ledPulse}"></div> ${task.priority}</div>
-                            
-                            <div class="col-span-3 md:col-span-1 text-right relative" onclick="event.stopPropagation()">
-                                <button onclick="toggleCardMenu(event, '${task.id}')" class="text-slate-400 hover:text-slate-800 p-1 rounded-md">
-                                    <svg class="w-5 h-5 inline" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
-                                </button>
-                                ${buildMenuOptions(task)}
-                            </div>
-                        </div>
-                    </div>
-                `;
+            filteredTasks.forEach(t => {
+                const end = t.selectedDates && t.selectedDates.length > 0 ? t.selectedDates[t.selectedDates.length-1] : t.deadline;
+                html += `<div class="glass-card p-4 flex justify-between items-center cursor-pointer" onclick="openPreviewModal('${t.id}')">
+                    <div class="flex items-center gap-4"><div class="w-4 h-4 rounded-full ${t.color || 'bg-slate-200'}"></div><div class="font-bold text-slate-800">${t.title}</div></div>
+                    <div class="text-sm text-slate-500 font-medium">${formatDate(end)}</div>
+                </div>`;
             });
             container.innerHTML = html;
         }
 
-        // -----------------------------------------------------
-        // RENDER CALENDAR
-        // -----------------------------------------------------
         function renderCalendar(filteredTasks) {
             const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
             document.getElementById('calendar-month-year').innerText = `${monthNames[currentMonth]} ${currentYear}`;
             const grid = document.getElementById('calendar-grid');
             grid.innerHTML = '';
 
-            const firstDay = new Date(currentYear, currentMonth, 1).getDay(); 
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay(); // 0 (Sun) to 6 (Sat)
             const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-            let startDayIndex = firstDay === 0 ? 6 : firstDay - 1; 
 
-            for(let i = 0; i < startDayIndex; i++) {
+            for(let i = 0; i < firstDay; i++) {
                 grid.innerHTML += `<div class="bg-white/30 rounded-lg opacity-40 p-1"></div>`;
             }
 
             for(let day = 1; day <= daysInMonth; day++) {
                 const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                const tasksOnDay = filteredTasks.filter(t => t.deadline === dateStr);
+                const dayDate = new Date(dateStr);
+                
+                // Penentuan Hari Merah
+                const isWeekend = dayDate.getDay() === 0 || dayDate.getDay() === 6; // Sabtu Minggu
+                const isHoliday = nationalHolidays.includes(dateStr);
+                const isRedDay = isWeekend || isHoliday;
+                const textDayClass = isRedDay ? 'holiday-red' : 'text-slate-600';
+
+                // Tugas yang aktif pada tanggal ini dari kalender interaktif
+                const tasksOnDay = filteredTasks.filter(t => {
+                    if (t.selectedDates && t.selectedDates.length > 0) {
+                        return t.selectedDates.includes(dateStr);
+                    } else {
+                        const start = t.startDate || t.deadline || '9999-12-31';
+                        const end = t.endDate || t.deadline || '0000-00-00';
+                        return dateStr >= start && dateStr <= end;
+                    }
+                });
                 
                 let tasksHtml = '';
                 tasksOnDay.slice(0, 3).forEach(t => { 
-                    let bg = t.status === 'done' ? 'bg-green-100 text-green-700 line-through' : 'bg-white/90 border border-slate-200';
-                    tasksHtml += `<div onclick="openPreviewModal('${t.id}')" class="text-[10px] p-1 mb-1 rounded cursor-pointer truncate font-medium ${bg} shadow-sm hover:shadow transition-shadow">• ${t.title}</div>`;
+                    let bg = t.status === 'done' ? 'bg-green-100 text-green-700 opacity-60 line-through' : 'bg-white border shadow-sm text-slate-800';
+                    let mark = t.color ? t.color.replace('bg-', 'text-').replace('-200', '-400') : 'text-slate-400';
+                    tasksHtml += `<div onclick="openPreviewModal('${t.id}')" class="text-[10px] p-1 mb-1 rounded cursor-pointer truncate font-bold ${bg} hover:scale-105 transition-transform" title="${t.title}"><span class="${mark}">●</span> ${t.title}</div>`;
                 });
-
-                if(tasksOnDay.length > 3) {
-                    tasksHtml += `<div class="text-[10px] text-blue-600 font-bold bg-white/60 rounded px-1">+${tasksOnDay.length - 3} lagi</div>`;
-                }
+                if(tasksOnDay.length > 3) tasksHtml += `<div class="text-[10px] text-slate-500 font-bold">+${tasksOnDay.length - 3} lainnya</div>`;
 
                 const isToday = (day === new Date().getDate() && currentMonth === new Date().getMonth() && currentYear === new Date().getFullYear());
-                const dayStyle = isToday ? 'bg-blue-50 border-2 border-blue-400 shadow-inner' : 'bg-white/50 border border-white hover:bg-white/80';
+                const dayStyle = isToday ? 'bg-blue-50/80 border-2 border-blue-400' : 'bg-white/40 border border-transparent';
 
                 grid.innerHTML += `
-                    <div class="rounded-lg p-1.5 md:p-2 flex flex-col h-24 md:h-28 overflow-hidden transition-colors ${dayStyle}">
-                        <div class="text-xs font-bold text-slate-600 text-right mb-1 ${isToday ? 'text-blue-600' : ''}">${day}</div>
-                        <div class="flex-1 overflow-hidden">${tasksHtml}</div>
+                    <div class="rounded-lg p-1 md:p-2 flex flex-col overflow-hidden ${dayStyle}">
+                        <div class="text-xs font-extrabold text-right mb-1 ${textDayClass} ${isToday ? 'text-blue-600' : ''}">${day}</div>
+                        <div class="flex-1 overflow-y-auto no-scrollbar">${tasksHtml}</div>
                     </div>
                 `;
             }
         }
-        function changeCalendarMonth(offset) {
-            currentMonth += offset;
-            if(currentMonth < 0) { currentMonth = 11; currentYear--; }
-            if(currentMonth > 11) { currentMonth = 0; currentYear++; }
-            renderApp();
-        }
+        function changeCalendarMonth(offset) { currentMonth += offset; if(currentMonth < 0) { currentMonth = 11; currentYear--; } if(currentMonth > 11) { currentMonth = 0; currentYear++; } renderApp(); }
 
         function buildMenuOptions(task) {
             return `
-                <div id="menu-${task.id}" class="hidden absolute right-0 top-8 w-44 bg-white/90 backdrop-blur-md border border-slate-200 p-1.5 shadow-xl rounded-xl z-50 flex flex-col cursor-default transform origin-top-right transition-all">
-                    <button onclick="editFromMenu(event, '${task.id}')" class="text-left px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg flex items-center gap-2"><svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg> Edit Tugas</button>
-                    <button onclick="duplicateTask(event, '${task.id}')" class="text-left px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg flex items-center gap-2"><svg class="w-4 h-4 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg> Duplikat</button>
-                    
-                    <div class="h-px bg-slate-200 my-1"></div>
-                    <div class="px-3 py-1 text-[10px] uppercase tracking-wider text-slate-400 font-bold">Pindah Ke:</div>
-                    ${task.status !== 'todo' ? `<button onclick="moveTaskMenu(event, '${task.id}', 'todo')" class="text-left px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-pink-400"></span> To Do</button>` : ''}
-                    ${task.status !== 'inprogress' ? `<button onclick="moveTaskMenu(event, '${task.id}', 'inprogress')" class="text-left px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-blue-400"></span> In Progress</button>` : ''}
-                    ${task.status !== 'done' ? `<button onclick="moveTaskMenu(event, '${task.id}', 'done')" class="text-left px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-400"></span> Done</button>` : ''}
-
-                    <div class="h-px bg-slate-200 my-1"></div>
-                    <button onclick="openDeleteModal(event, '${task.id}')" class="text-left px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg flex items-center gap-2"><svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg> Hapus</button>
+                <div id="menu-${task.id}" class="hidden absolute right-0 top-8 w-44 glass-panel border border-white p-1.5 shadow-xl z-50 flex flex-col">
+                    <button onclick="editFromMenu(event, '${task.id}')" class="text-left px-3 py-2 text-sm font-bold text-slate-700 hover:bg-white/60 rounded-lg">Edit</button>
+                    <button onclick="duplicateTask(event, '${task.id}')" class="text-left px-3 py-2 text-sm font-bold text-slate-700 hover:bg-white/60 rounded-lg">Duplikat</button>
+                    <div class="h-px bg-slate-200/60 my-1"></div>
+                    <div class="px-3 py-1 text-[10px] uppercase text-slate-400 font-bold">Pindah Ke:</div>
+                    ${task.status !== 'todo' ? `<button onclick="moveTaskMenu(event, '${task.id}', 'todo')" class="text-left px-3 py-1.5 text-sm font-bold text-slate-600 hover:bg-white/60 rounded-lg flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-slate-300"></span> To Do</button>` : ''}
+                    ${task.status !== 'inprogress' ? `<button onclick="moveTaskMenu(event, '${task.id}', 'inprogress')" class="text-left px-3 py-1.5 text-sm font-bold text-slate-600 hover:bg-white/60 rounded-lg flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-blue-400"></span> In Progress</button>` : ''}
+                    ${task.status !== 'done' ? `<button onclick="moveTaskMenu(event, '${task.id}', 'done')" class="text-left px-3 py-1.5 text-sm font-bold text-slate-600 hover:bg-white/60 rounded-lg flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-400"></span> Done</button>` : ''}
+                    <div class="h-px bg-slate-200/60 my-1"></div>
+                    <button onclick="openDeleteModal(event, '${task.id}')" class="text-left px-3 py-2 text-sm font-bold text-red-600 hover:bg-red-50 rounded-lg">Hapus</button>
                 </div>
             `;
         }
 
-        function toggleCardMenu(e, id) {
-            e.stopPropagation(); 
-            if (activeMenuId && activeMenuId !== id) {
-                const oldMenu = document.getElementById(`menu-${activeMenuId}`);
-                if (oldMenu) oldMenu.classList.add('hidden');
-            }
-            const menu = document.getElementById(`menu-${id}`);
-            if (menu.classList.contains('hidden')) {
-                menu.classList.remove('hidden');
-                activeMenuId = id;
-            } else {
-                menu.classList.add('hidden');
-                activeMenuId = null;
-            }
-        }
-
-        function editFromMenu(e, id) { e.stopPropagation(); toggleCardMenu(e, id); openModal(id); }
-        function moveTaskMenu(e, id, newStatus) {
-            e.stopPropagation(); toggleCardMenu(e, id);
-            const taskIndex = tasks.findIndex(t => t.id === id);
-            if (taskIndex !== -1) {
-                tasks[taskIndex].status = newStatus;
-                saveToStorage();
-                renderApp(); 
-            }
-        }
-        function duplicateTask(e, id) {
-            e.stopPropagation(); toggleCardMenu(e, id); 
-            const taskToCopy = tasks.find(t => t.id === id);
-            if (taskToCopy) {
-                const newTask = JSON.parse(JSON.stringify(taskToCopy));
-                newTask.id = Date.now().toString(); 
-                newTask.createdDate = Date.now().toString();
-                newTask.title = newTask.title + " (Salinan)";
-                tasks.push(newTask);
-                saveToStorage();
-                renderApp();
-            }
-        }
-
-        document.addEventListener('click', (e) => {
-            if (activeMenuId) {
-                const menu = document.getElementById(`menu-${activeMenuId}`);
-                if (menu && !menu.contains(e.target)) {
-                    menu.classList.add('hidden');
-                    activeMenuId = null;
-                }
-            }
-        });
-
-        // -----------------------------------------------------
-        // MODAL PREVIEW KOMPREHENSIF
-        // -----------------------------------------------------
-        function openPreviewModal(taskId) {
-            const task = tasks.find(t => t.id === taskId);
-            if (!task) return;
-
-            document.getElementById('previewTaskId').value = task.id;
-            document.getElementById('previewTitle').innerText = task.title;
-
-            // Cover
-            const cover = document.getElementById('previewCover');
-            cover.className = `h-20 w-full relative flex items-end px-8 pb-3 ${task.color || 'bg-slate-200'}`;
-
-            // Status Indicator (Statis, bukan lampu kelap kelip)
-            let stColor = task.status === 'todo' ? 'bg-pink-100 text-pink-700' : (task.status === 'inprogress' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700');
-            let stCircle = task.status === 'todo' ? 'bg-pink-500' : (task.status === 'inprogress' ? 'bg-blue-500' : 'bg-green-500');
-            let stText = task.status === 'todo' ? 'To Do' : (task.status === 'inprogress' ? 'In Progress' : 'Done');
-            document.getElementById('previewStatusBadge').className = `inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold shadow-sm ${stColor}`;
-            document.getElementById('previewStatusBadge').innerHTML = `<div class="w-2.5 h-2.5 rounded-full ${stCircle}"></div> ${stText}`;
-
-            // Prioritas (Lampu Kelap-kelip / Pulse)
-            let ledPulse = '';
-            if(task.priority === 'Tinggi') ledPulse = 'pulse-high bg-red-500';
-            else if(task.priority === 'Sedang') ledPulse = 'pulse-medium bg-amber-400';
-            else ledPulse = 'bg-green-500';
-            document.getElementById('previewPriorityLED').className = `w-3 h-3 rounded-full ${ledPulse}`;
-            document.getElementById('previewPriorityText').innerText = task.priority;
-
-            // Info & Deadline
-            document.getElementById('previewEstimate').innerText = task.estimate || '-';
-            document.getElementById('previewDeadlineText').innerText = formatDate(task.deadline);
-
-            // Perhitungan Hari
-            const alertBox = document.getElementById('previewTimeAlert');
-            const todayDate = new Date();
-            todayDate.setHours(0,0,0,0);
-            const deadlineDate = new Date(task.deadline);
-            deadlineDate.setHours(0,0,0,0);
-            const diffTime = deadlineDate - todayDate;
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-            alertBox.classList.remove('hidden', 'bg-red-50', 'text-red-700', 'border-red-200', 'bg-amber-50', 'text-amber-700', 'border-amber-200', 'bg-sky-50', 'text-sky-700', 'border-sky-200');
-
-            if(task.status === 'done') {
-                alertBox.classList.add('bg-slate-100', 'text-slate-600', 'border-slate-200');
-                alertBox.innerHTML = `✅ Tugas Selesai.`;
-            } else if (diffDays < 0) {
-                alertBox.classList.add('bg-red-50', 'text-red-700', 'border-red-200');
-                alertBox.innerHTML = `🚨 Terlambat ${Math.abs(diffDays)} Hari!`;
-            } else if (diffDays === 0) {
-                alertBox.classList.add('bg-amber-50', 'text-amber-700', 'border-amber-200');
-                alertBox.innerHTML = `⚠️ Tenggat Hari Ini!`;
-            } else {
-                alertBox.classList.add('bg-sky-50', 'text-sky-700', 'border-sky-200');
-                alertBox.innerHTML = `⏱️ Tersisa ${diffDays} Hari`;
-            }
-
-            // Desc
-            const desc = document.getElementById('previewDesc');
-            if(task.description && task.description.trim()) {
-                desc.innerHTML = task.description.replace(/\n/g, '<br>');
-                desc.parentElement.classList.remove('hidden');
-            } else {
-                desc.parentElement.classList.add('hidden');
-            }
-
-            renderPreviewSubtasks(task);
-
-            const pModal = document.getElementById('previewModal');
-            pModal.classList.remove('hidden');
-            pModal.classList.add('flex');
-        }
-
-        function closePreviewModal() {
-            const pModal = document.getElementById('previewModal');
-            pModal.classList.add('hidden');
-            pModal.classList.remove('flex');
-        }
-        function editFromPreview() {
-            const id = document.getElementById('previewTaskId').value;
-            closePreviewModal(); openModal(id);
-        }
-
-        function renderPreviewSubtasks(task) {
-            const subContainer = document.getElementById('previewSubtasks');
-            const progCont = document.getElementById('previewProgressContainer');
-            const progBar = document.getElementById('previewProgressBar');
-            const progTxt = document.getElementById('previewProgressText');
-            const emptyState = document.getElementById('previewSubtaskEmpty');
-            
-            if (task.subtasks && task.subtasks.length > 0) {
-                emptyState.classList.add('hidden');
-                progCont.classList.remove('hidden');
-                subContainer.innerHTML = '';
-                
-                let completed = 0;
-                task.subtasks.forEach(st => {
-                    if (st.completed) completed++;
-                    let disabledStr = task.status === 'done' ? 'disabled' : '';
-                    let opacityStr = task.status === 'done' ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer hover:bg-white/80';
-                    
-                    subContainer.innerHTML += `
-                        <label class="flex items-center gap-3 bg-white/60 p-3.5 rounded-xl border border-white transition-all shadow-sm ${opacityStr}">
-                            <input type="checkbox" ${st.completed ? 'checked' : ''} ${disabledStr} onchange="toggleSubtaskInPreview('${task.id}', '${st.id}')" class="w-5 h-5 rounded text-blue-500 focus:ring-blue-500 border-slate-300">
-                            <span class="flex-1 text-sm font-semibold ${st.completed ? 'line-through text-slate-400' : 'text-slate-800'}">${st.text}</span>
-                        </label>
-                    `;
-                });
-
-                let pct = Math.round((completed / task.subtasks.length) * 100);
-                progBar.style.width = pct + '%';
-                progBar.className = `h-full transition-all duration-500 ${pct === 100 ? 'bg-green-500' : 'bg-blue-500'}`;
-                progTxt.innerText = pct + '% Selesai';
-            } else {
-                progCont.classList.add('hidden');
-                subContainer.innerHTML = '';
-                emptyState.classList.remove('hidden');
-            }
-        }
-
-        function toggleSubtaskInPreview(taskId, subtaskId) {
-            const taskIndex = tasks.findIndex(t => t.id === taskId);
-            if(taskIndex !== -1 && tasks[taskIndex].status !== 'done') {
-                const st = tasks[taskIndex].subtasks.find(s => s.id === subtaskId);
-                if(st) {
-                    st.completed = !st.completed;
-                    saveToStorage();
-                    renderApp(); 
-                    renderPreviewSubtasks(tasks[taskIndex]); 
-                }
-            }
-        }
-
-        function copyTaskInfo() {
-            const title = document.getElementById('previewTitle').innerText;
-            const deadline = document.getElementById('previewDeadlineText').innerText;
-            const status = document.getElementById('previewStatusBadge').innerText.trim();
-            const textToCopy = `[${status}] ${title} (Deadline: ${deadline})`;
-            
-            // Clipboard API (dengan fallback execCommand)
-            if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(textToCopy);
-            } else {
-                const textArea = document.createElement("textarea");
-                textArea.value = textToCopy;
-                textArea.style.position = "absolute"; textArea.style.left = "-999999px";
-                document.body.prepend(textArea);
-                textArea.select();
-                try { document.execCommand('copy'); } catch (error) { console.error(error); }
-                textArea.remove();
-            }
-            
-            const btn = document.querySelector('button[title="Salin Info"]');
-            const originalHTML = btn.innerHTML;
-            btn.innerHTML = `✅ Tersalin!`;
-            setTimeout(() => { btn.innerHTML = originalHTML; }, 2000);
-        }
-
-        // -----------------------------------------------------
-        // MODAL FORM CREATE/EDIT
-        // -----------------------------------------------------
         const modal = document.getElementById('taskModal');
         const form = document.getElementById('taskForm');
 
         function openModal(taskId = null) {
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+            modal.classList.remove('hidden'); modal.classList.add('flex');
             const titleEl = document.getElementById('modalTitle');
             const submitBtn = document.getElementById('submitBtn');
             
             if (taskId) {
                 const task = tasks.find(t => t.id === taskId);
                 if (task) {
-                    titleEl.innerText = '🔍 Edit Tugas';
-                    submitBtn.innerText = 'Update Perubahan';
-                    
+                    titleEl.innerText = '🔍 Edit Tugas'; submitBtn.innerText = 'Update Perubahan';
                     document.getElementById('editTaskId').value = task.id;
                     document.getElementById('taskCreatedDate').value = task.createdDate || Date.now().toString();
                     document.getElementById('taskTitle').value = task.title;
                     document.getElementById('taskType').value = task.type;
-                    document.getElementById('taskDeadline').value = task.deadline;
-                    document.getElementById('taskEstimate').value = task.estimate || '';
+                    
+                    // Muat state Mini Kalender
+                    if (task.selectedDates && task.selectedDates.length > 0) {
+                        selectedTaskDates = [...task.selectedDates];
+                    } else if (task.startDate && task.endDate) {
+                        // Konversi data lama jika ada
+                        selectedTaskDates = [];
+                        let curr = new Date(task.startDate);
+                        let endD = new Date(task.endDate);
+                        while(curr <= endD) {
+                            const dStr = curr.toISOString().split('T')[0];
+                            const isWE = curr.getDay() === 0 || curr.getDay() === 6;
+                            if(!isWE && !nationalHolidays.includes(dStr)) selectedTaskDates.push(dStr);
+                            curr.setDate(curr.getDate() + 1);
+                        }
+                    } else {
+                        selectedTaskDates = [];
+                    }
+
+                    if (selectedTaskDates.length > 0) {
+                        const firstDateObj = new Date(selectedTaskDates[0]);
+                        miniCalMonth = firstDateObj.getMonth();
+                        miniCalYear = firstDateObj.getFullYear();
+                    } else {
+                        miniCalMonth = new Date().getMonth();
+                        miniCalYear = new Date().getFullYear();
+                    }
+
                     document.getElementById('taskStatus').value = task.status;
                     document.getElementById('taskPriority').value = task.priority || 'Rendah';
                     document.getElementById('taskDesc').value = task.description || '';
@@ -1069,11 +731,8 @@
                     currentSubtasks = task.subtasks ? JSON.parse(JSON.stringify(task.subtasks)) : [];
                     const container = document.getElementById('subtaskContainer');
                     const chevron = document.getElementById('subtaskChevron');
-                    if (currentSubtasks.length > 0) {
-                        container.classList.remove('hidden'); chevron.classList.add('rotate-180');
-                    } else {
-                        container.classList.add('hidden'); chevron.classList.remove('rotate-180');
-                    }
+                    if (currentSubtasks.length > 0) { container.classList.remove('hidden'); chevron.classList.add('rotate-180'); } 
+                    else { container.classList.add('hidden'); chevron.classList.remove('rotate-180'); }
                 }
             } else {
                 form.reset();
@@ -1082,30 +741,24 @@
                 document.getElementById('taskStatus').value = 'todo'; 
                 document.getElementById('taskPriority').value = 'Rendah'; 
                 document.querySelector(`input[name="taskColor"][value="bg-slate-200"]`).checked = true;
+                titleEl.innerText = '✨ Tambah Tugas Baru'; submitBtn.innerText = 'Simpan Jadwal';
+                
+                selectedTaskDates = [];
+                miniCalMonth = new Date().getMonth();
+                miniCalYear = new Date().getFullYear();
 
-                titleEl.innerText = '✨ Tambah Tugas Baru';
-                submitBtn.innerText = 'Simpan Jadwal';
                 currentSubtasks = []; 
                 document.getElementById('subtaskContainer').classList.add('hidden');
                 document.getElementById('subtaskChevron').classList.remove('rotate-180');
             }
-            renderSubtasks();
-            document.getElementById('taskTitle').focus();
+            renderSubtasks(); renderMiniCalendar(); document.getElementById('taskTitle').focus();
         }
 
         function toggleSubtaskSection() {
-            const container = document.getElementById('subtaskContainer');
-            const chevron = document.getElementById('subtaskChevron');
-            if (container.classList.contains('hidden')) {
-                container.classList.remove('hidden'); chevron.classList.add('rotate-180');
-            } else {
-                container.classList.add('hidden'); chevron.classList.remove('rotate-180');
-            }
+            const container = document.getElementById('subtaskContainer'); const chevron = document.getElementById('subtaskChevron');
+            if (container.classList.contains('hidden')) { container.classList.remove('hidden'); chevron.classList.add('rotate-180'); } else { container.classList.add('hidden'); chevron.classList.remove('rotate-180'); }
         }
-
-        function closeModal() {
-            modal.classList.add('hidden'); modal.classList.remove('flex');
-        }
+        function closeModal() { modal.classList.add('hidden'); modal.classList.remove('flex'); }
 
         function saveTask(e) {
             e.preventDefault();
@@ -1115,137 +768,166 @@
             const type = document.getElementById('taskType').value;
             const status = document.getElementById('taskStatus').value;
             const priority = document.getElementById('taskPriority').value;
-            const deadline = document.getElementById('taskDeadline').value;
-            const estimate = document.getElementById('taskEstimate').value.trim();
-            const desc = document.getElementById('taskDesc').value.trim();
             
+            // Ekstrak dari Mini Calendar
+            selectedTaskDates.sort();
+            
+            // Pengaman jika pengguna tidak mencentang tanggal satupun, set ke hari ini
+            if(selectedTaskDates.length === 0) {
+                const todayStr = new Date().toISOString().split('T')[0];
+                selectedTaskDates.push(todayStr);
+            }
+
+            const startDate = selectedTaskDates[0];
+            const endDate = selectedTaskDates[selectedTaskDates.length - 1];
+            const duration = selectedTaskDates.length;
+            const deadline = endDate; 
+
+            const desc = document.getElementById('taskDesc').value.trim();
             const colorOption = document.querySelector('input[name="taskColor"]:checked');
             const color = colorOption ? colorOption.value : 'bg-slate-200';
 
             if (editId) {
-                const taskIndex = tasks.findIndex(t => t.id === editId);
-                if (taskIndex !== -1) {
-                    tasks[taskIndex].title = title;
-                    tasks[taskIndex].type = type;
-                    tasks[taskIndex].status = status;
-                    tasks[taskIndex].priority = priority;
-                    tasks[taskIndex].deadline = deadline;
-                    tasks[taskIndex].estimate = estimate;
-                    tasks[taskIndex].description = desc;
-                    tasks[taskIndex].subtasks = currentSubtasks;
-                    tasks[taskIndex].color = color;
+                const tIndex = tasks.findIndex(t => t.id === editId);
+                if (tIndex !== -1) {
+                    tasks[tIndex].title = title; tasks[tIndex].type = type; tasks[tIndex].status = status;
+                    tasks[tIndex].priority = priority; 
+                    tasks[tIndex].startDate = startDate; tasks[tIndex].endDate = endDate; tasks[tIndex].duration = duration;
+                    tasks[tIndex].deadline = deadline;
+                    tasks[tIndex].selectedDates = [...selectedTaskDates];
+                    tasks[tIndex].description = desc; tasks[tIndex].subtasks = currentSubtasks; tasks[tIndex].color = color;
                 }
             } else {
-                const newTask = {
-                    id: Date.now().toString(),
-                    createdDate: createdDate,
-                    title: title,
-                    type: type,
-                    priority: priority,
-                    deadline: deadline,
-                    estimate: estimate,
-                    status: status,
-                    description: desc,
-                    subtasks: currentSubtasks,
-                    color: color
-                };
-                tasks.push(newTask);
+                tasks.push({
+                    id: Date.now().toString(), createdDate: createdDate, title: title, type: type, priority: priority,
+                    startDate: startDate, endDate: endDate, duration: duration, deadline: deadline, selectedDates: [...selectedTaskDates],
+                    status: status, description: desc, subtasks: currentSubtasks, color: color
+                });
             }
-            saveToStorage();
-            closeModal();
-            renderApp();
+            saveToStorage(); closeModal(); renderApp();
         }
 
         function renderSubtasks() {
-            const list = document.getElementById('subtaskList');
-            list.innerHTML = '';
+            const list = document.getElementById('subtaskList'); list.innerHTML = '';
             currentSubtasks.forEach(st => {
-                list.innerHTML += `
-                    <div class="flex items-center gap-3 bg-white/50 p-2.5 rounded-xl border border-white hover:bg-white/80 transition-colors shadow-sm">
-                        <input type="checkbox" ${st.completed ? 'checked' : ''} onchange="toggleSubtask('${st.id}')" class="w-5 h-5 cursor-pointer rounded text-blue-500 focus:ring-blue-500 border-slate-300">
-                        <span class="flex-1 text-sm font-semibold ${st.completed ? 'line-through text-slate-400' : 'text-slate-700'}">${st.text}</span>
-                        <button type="button" onclick="deleteSubtask('${st.id}')" class="text-slate-400 hover:text-red-500 transition-colors p-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
-                    </div>
-                `;
+                list.innerHTML += `<div class="flex items-center gap-3 bg-white/50 p-2.5 rounded-xl border border-white hover:bg-white transition-colors shadow-sm">
+                    <input type="checkbox" ${st.completed ? 'checked' : ''} onchange="toggleSubtask('${st.id}')" class="w-5 h-5 rounded text-blue-500">
+                    <span class="flex-1 text-sm font-bold ${st.completed ? 'line-through text-slate-400' : 'text-slate-700'}">${st.text}</span>
+                    <button type="button" onclick="deleteSubtask('${st.id}')" class="text-slate-400 hover:text-red-500"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                </div>`;
             });
         }
-        function addSubtask() {
-            const input = document.getElementById('newSubtaskInput');
-            const text = input.value.trim();
-            if(text) {
-                currentSubtasks.push({ id: Date.now().toString(), text: text, completed: false });
-                input.value = ''; renderSubtasks();
-            }
-        }
+        function addSubtask() { const i = document.getElementById('newSubtaskInput'); const t = i.value.trim(); if(t) { currentSubtasks.push({ id: Date.now().toString(), text: t, completed: false }); i.value = ''; renderSubtasks(); } }
         function handleSubtaskEnter(e) { if (e.key === 'Enter') { e.preventDefault(); addSubtask(); } }
-        function toggleSubtask(id) {
-            const st = currentSubtasks.find(t => t.id === id);
-            if(st) st.completed = !st.completed;
-            renderSubtasks();
-        }
-        function deleteSubtask(id) {
-            currentSubtasks = currentSubtasks.filter(t => t.id !== id);
-            renderSubtasks();
-        }
+        function toggleSubtask(id) { const st = currentSubtasks.find(t => t.id === id); if(st) st.completed = !st.completed; renderSubtasks(); }
+        function deleteSubtask(id) { currentSubtasks = currentSubtasks.filter(t => t.id !== id); renderSubtasks(); }
 
+        // MENU TITIK TIGA KARTU
+        function toggleCardMenu(e, id) {
+            e.stopPropagation(); 
+            if (activeMenuId && activeMenuId !== id) { const oldMenu = document.getElementById(`menu-${activeMenuId}`); if (oldMenu) oldMenu.classList.add('hidden'); }
+            const menu = document.getElementById(`menu-${id}`);
+            if (menu.classList.contains('hidden')) { menu.classList.remove('hidden'); activeMenuId = id; } 
+            else { menu.classList.add('hidden'); activeMenuId = null; }
+        }
+        function editFromMenu(e, id) { e.stopPropagation(); toggleCardMenu(e, id); openModal(id); }
+        function duplicateTask(e, id) { e.stopPropagation(); toggleCardMenu(e, id); const taskToCopy = tasks.find(t => t.id === id); if (taskToCopy) { const newTask = JSON.parse(JSON.stringify(taskToCopy)); newTask.id = Date.now().toString(); newTask.createdDate = Date.now().toString(); newTask.title = newTask.title + " (Salinan)"; tasks.push(newTask); saveToStorage(); renderApp(); } }
+        function moveTaskMenu(e, id, newStatus) { e.stopPropagation(); toggleCardMenu(e, id); const taskIndex = tasks.findIndex(t => t.id === id); if (taskIndex !== -1) { tasks[taskIndex].status = newStatus; saveToStorage(); renderApp(); } }
+        document.addEventListener('click', (e) => { if (activeMenuId) { const menu = document.getElementById(`menu-${activeMenuId}`); if (menu && !menu.contains(e.target)) { menu.classList.add('hidden'); activeMenuId = null; } } });
+
+        // DRAG AND DROP
         function allowDrop(e) { e.preventDefault(); }
-        function drag(e) {
-            e.dataTransfer.setData("taskId", e.target.id);
-            setTimeout(() => e.target.style.opacity = '0.5', 0);
-        }
-        function drop(e, newStatus) {
-            e.preventDefault();
-            const taskId = e.dataTransfer.getData("taskId");
-            const taskIndex = tasks.findIndex(t => t.id === taskId);
-            if (taskIndex !== -1) {
-                tasks[taskIndex].status = newStatus;
-                saveToStorage(); renderApp();
-            }
-        }
+        function drag(e) { e.dataTransfer.setData("taskId", e.target.id); setTimeout(() => e.target.style.opacity = '0.5', 0); }
+        function drop(e, newStatus) { e.preventDefault(); const taskId = e.dataTransfer.getData("taskId"); const taskIndex = tasks.findIndex(t => t.id === taskId); if (taskIndex !== -1) { tasks[taskIndex].status = newStatus; saveToStorage(); renderApp(); } }
         document.addEventListener('dragend', (e) => { if(e.target.style) e.target.style.opacity = '1'; });
 
-        function openDeleteModal(event, id) {
-            event.stopPropagation(); 
-            if (activeMenuId) {
-                const menu = document.getElementById(`menu-${activeMenuId}`);
-                if (menu) menu.classList.add('hidden'); activeMenuId = null;
+        // DELETE
+        function openDeleteModal(e, id) { e.stopPropagation(); if(activeMenuId){ document.getElementById(`menu-${activeMenuId}`).classList.add('hidden'); activeMenuId = null; } taskToDeleteId = id; document.getElementById('deleteModal').classList.remove('hidden'); document.getElementById('deleteModal').classList.add('flex'); }
+        function closeDeleteModal() { taskToDeleteId = null; document.getElementById('deleteModal').classList.add('hidden'); document.getElementById('deleteModal').classList.remove('flex'); }
+        function confirmDelete() { if (taskToDeleteId) { tasks = tasks.filter(t => t.id !== taskToDeleteId); saveToStorage(); renderApp(); closeDeleteModal(); } }
+
+        // PREVIEW MODAL COMPREHENSIVE
+        function openPreviewModal(taskId) {
+            const task = tasks.find(t => t.id === taskId); if (!task) return;
+            document.getElementById('previewTaskId').value = task.id;
+            document.getElementById('previewTitle').innerText = task.title;
+
+            const endD = task.selectedDates && task.selectedDates.length > 0 ? task.selectedDates[task.selectedDates.length-1] : task.deadline;
+
+            const cover = document.getElementById('previewCover');
+            cover.className = `h-16 w-full relative ${task.color || 'bg-slate-200'}`;
+
+            let statusColor = task.status === 'todo' ? 'bg-slate-200 text-slate-700' : (task.status === 'inprogress' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700');
+            let statusText = task.status === 'todo' ? 'To Do' : (task.status === 'inprogress' ? 'In Progress' : 'Done');
+            let prioDot = task.priority === 'Tinggi' ? '<span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span> Tinggi' : (task.priority === 'Sedang' ? '<span class="w-2.5 h-2.5 rounded-full bg-yellow-400 animate-pulse"></span> Sedang' : '<span class="w-2.5 h-2.5 rounded-full bg-green-500"></span> Rendah');
+
+            document.getElementById('previewMeta').innerHTML = `<span class="px-3 py-1 text-xs font-bold rounded-full ${statusColor}">${statusText}</span><span class="px-3 py-1 text-xs font-bold rounded-full bg-white/60 text-slate-700 shadow-sm flex items-center gap-1.5">${prioDot}</span><span class="px-3 py-1 text-xs font-bold rounded-full bg-white/60 text-slate-700 shadow-sm border border-white">🏷️ ${task.type}</span>`;
+            
+            const descC = document.getElementById('previewDesc');
+            if(task.description && task.description.trim() !== '') { descC.innerHTML = task.description.replace(/\n/g, '<br>'); descC.parentElement.classList.remove('hidden'); } else { descC.parentElement.classList.add('hidden'); }
+            
+            // TIME STATUS
+            const today = new Date().toISOString().split('T')[0];
+            const timeBox = document.getElementById('previewTimeLeft');
+            if(task.status === 'done') { timeBox.className = "text-sm font-bold p-3 rounded-lg text-center shadow-sm bg-green-100 text-green-700 border border-green-200"; timeBox.innerText = "Selesai"; }
+            else if (endD < today) { timeBox.className = "text-sm font-bold p-3 rounded-lg text-center shadow-sm bg-red-100 text-red-700 border border-red-200 animate-pulse"; timeBox.innerText = "Terlambat!"; }
+            else if (endD === today) { timeBox.className = "text-sm font-bold p-3 rounded-lg text-center shadow-sm bg-amber-100 text-amber-700 border border-amber-200 animate-pulse"; timeBox.innerText = "Tenggat Hari Ini!"; }
+            else { 
+                const diffTime = Math.abs(new Date(endD) - new Date(today)); const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                timeBox.className = "text-sm font-bold p-3 rounded-lg text-center shadow-sm bg-blue-50 text-blue-700 border border-blue-200"; timeBox.innerText = `Tersisa ${diffDays} Hari`;
             }
-            taskToDeleteId = id;
-            const delModal = document.getElementById('deleteModal');
-            delModal.classList.remove('hidden'); delModal.classList.add('flex');
-        }
-        function closeDeleteModal() {
-            taskToDeleteId = null;
-            const delModal = document.getElementById('deleteModal');
-            delModal.classList.add('hidden'); delModal.classList.remove('flex');
-        }
-        function confirmDelete() {
-            if (taskToDeleteId) {
-                tasks = tasks.filter(task => task.id !== taskToDeleteId);
-                saveToStorage(); renderApp(); closeDeleteModal();
-            }
+            
+            let dur = task.duration || (task.selectedDates ? task.selectedDates.length : 1);
+            document.getElementById('previewDuration').innerText = dur + " Hari Aktual";
+
+            renderPreviewSubtasks(task);
+            document.getElementById('previewModal').classList.remove('hidden'); document.getElementById('previewModal').classList.add('flex');
         }
 
-        function getEmptyStateHtml(msg = "Belum ada jadwal") {
-            return `
-                <div class="flex flex-col items-center justify-center h-40 text-slate-400 opacity-70 w-full col-span-full">
-                    <svg class="w-10 h-10 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
-                    <p class="text-sm font-semibold">${msg}</p>
-                </div>
-            `;
-        }
+        function closePreviewModal() { document.getElementById('previewModal').classList.add('hidden'); document.getElementById('previewModal').classList.remove('flex'); }
+        function editFromPreview() { const id = document.getElementById('previewTaskId').value; closePreviewModal(); openModal(id); }
 
-        // PENTING: Penutup fungsi yang tadi hilang
-        function formatDate(dateString) {
-            if(!dateString) return "-";
-            let dateObj;
-            if (/^\d+$/.test(dateString)) {
-                dateObj = new Date(parseInt(dateString));
+        function renderPreviewSubtasks(task) {
+            const sect = document.getElementById('previewSubtaskSection'); const cont = document.getElementById('previewSubtasks');
+            if (task.subtasks && task.subtasks.length > 0) {
+                sect.classList.remove('hidden'); cont.innerHTML = ''; let completed = 0;
+                task.subtasks.forEach(st => {
+                    if (st.completed) completed++;
+                    let disabledStr = task.status === 'done' ? 'disabled' : ''; let opacityStr = task.status === 'done' ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer hover:bg-white';
+                    cont.innerHTML += `<label class="flex items-center gap-3 bg-white/60 p-3 rounded-xl border border-white transition-colors shadow-sm ${opacityStr}"><input type="checkbox" ${st.completed ? 'checked' : ''} ${disabledStr} onchange="toggleSubtaskInPreview('${task.id}', '${st.id}')" class="w-5 h-5 rounded text-blue-500 border-slate-300"><span class="flex-1 text-sm font-bold ${st.completed ? 'line-through text-slate-400' : 'text-slate-800'}">${st.text}</span></label>`;
+                });
+                let pct = Math.round((completed / task.subtasks.length) * 100);
+                document.getElementById('previewProgressBar').style.width = pct + '%'; document.getElementById('previewProgressBar').className = `h-full transition-all duration-500 ${pct === 100 ? 'bg-green-500' : 'bg-blue-500'}`;
+                document.getElementById('previewProgressText').innerText = pct + '% Selesai';
             } else {
-                dateObj = new Date(dateString);
+                sect.classList.remove('hidden');
+                document.getElementById('previewProgressContainer').classList.add('hidden');
+                cont.innerHTML = `<div class="text-sm font-bold text-slate-400 p-4 border-2 border-dashed border-slate-300 rounded-xl text-center">Tidak ada checklist untuk tugas ini.</div>`;
             }
-            const options = { day: 'numeric', month: 'short', year: 'numeric' };
-            return dateObj.toLocaleDateString('id-ID', options);
+        }
+
+        function toggleSubtaskInPreview(tId, sId) {
+            const tIdx = tasks.findIndex(t => t.id === tId);
+            if(tIdx !== -1 && tasks[tIdx].status !== 'done') {
+                const sub = tasks[tIdx].subtasks.find(s => s.id === sId);
+                if(sub) { sub.completed = !sub.completed; saveToStorage(); renderApp(); renderPreviewSubtasks(tasks[tIdx]); }
+            }
+        }
+
+        function copyTaskInfo() {
+            const tId = document.getElementById('previewTaskId').value; const t = tasks.find(x => x.id === tId);
+            if(t) {
+                const textToCopy = `[Tugas: ${t.title}] - Deadline: ${formatDate(t.selectedDates ? t.selectedDates[t.selectedDates.length-1] : t.deadline)} (Status: ${t.status})`;
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    const btn = document.querySelector('button[title="Salin Info Tugas"]'); btn.innerHTML = '<span class="text-green-500 text-xs font-bold px-2">Tersalin!</span>';
+                    setTimeout(() => { btn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>'; }, 2000);
+                });
+            }
+        }
+
+        function formatDate(dateStr) {
+            if(!dateStr) return "-"; let dObj = /^\d+$/.test(dateStr) ? new Date(parseInt(dateStr)) : new Date(dateStr);
+            return dObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
         }
 
     </script>
