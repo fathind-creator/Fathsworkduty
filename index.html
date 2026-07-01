@@ -146,7 +146,7 @@
         <!-- Perbaikan: Tombol Silang dipisah dengan Flex agar tidak menimpa Ikon Kalender Bawaan (Bisa Klik Tahun) -->
         <div class="flex gap-2 w-full md:w-auto">
             <input type="month" id="filterMonth" onchange="onFilterMonthChange()" class="glass-input p-3 flex-1 md:w-40 text-sm font-medium cursor-pointer" title="Filter Bulan">
-            <button onclick="clearMonthFilter()" class="glass-input px-3 text-slate-400 hover:text-red-500 flex items-center justify-center bg-white/60" title="Hapus Filter"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            <button onclick="clearMonthFilter()" class="glass-input px-3 text-slate-400 hover:text-red-500 flex items-center justify-center bg-white/60" title="Bersihkan Pencarian & Filter"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
         </div>
         
         <select id="filterType" onchange="renderApp()" class="glass-input p-3 w-full md:w-40 text-sm font-medium cursor-pointer">
@@ -368,6 +368,19 @@
         </div>
     </div>
 
+    <!-- DAY TASKS MODAL (MINI LIST) -->
+    <div id="dayModal" class="hidden fixed inset-0 bg-slate-800/40 z-50 justify-center items-start p-4 pt-20 pb-24 backdrop-blur-sm transition-opacity">
+        <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl border border-slate-200 my-auto">
+            <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-3">
+                <h2 id="dayModalTitle" class="text-xl font-extrabold text-slate-800">Tugas Harian</h2>
+                <button onclick="closeDayModal()" class="text-slate-400 hover:bg-slate-100 p-1.5 rounded-full transition-colors"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            </div>
+            <div id="dayModalList" class="flex flex-col gap-2 max-h-[60vh] overflow-y-auto pr-1 no-scrollbar">
+                <!-- Diisi via JS -->
+            </div>
+        </div>
+    </div>
+
     <script>
         // 0. FIREBASE REALTIME DB CONFIGURATION
         const firebaseConfig = {
@@ -406,17 +419,20 @@
             else document.body.style.overflow = '';
         }
 
-        // FUNGSI CLEAR FILTER BULAN (Telah ditambahkan kembali)
+        // FUNGSI CLEAR FILTER BULAN & PENCARIAN
         function clearMonthFilter() {
             const filterMonthInput = document.getElementById('filterMonth');
-            if (filterMonthInput) {
-                filterMonthInput.value = '';
-                // Kembalikan kalender ke bulan saat ini
-                const now = new Date();
-                currentYear = now.getFullYear();
-                currentMonth = now.getMonth();
-                renderApp();
-            }
+            const searchInput = document.getElementById('searchInput');
+            
+            // Bersihkan kedua input
+            if (filterMonthInput) filterMonthInput.value = '';
+            if (searchInput) searchInput.value = '';
+
+            // Kembalikan kalender ke bulan saat ini
+            const now = new Date();
+            currentYear = now.getFullYear();
+            currentMonth = now.getMonth();
+            renderApp();
         }
 
         function onFilterMonthChange() {
@@ -761,7 +777,7 @@
                         let markClass = t.color ? t.color.replace('bg-', 'text-').replace('-200', '-400') : 'text-slate-400';
                         markHtml = `<span class="${markClass}">●</span>`;
                     }
-                    tasksHtml += `<div onclick="openPreviewModal('${t.id}')" class="text-[10px] p-1 mb-1 rounded cursor-pointer truncate font-bold ${bg} hover:scale-105 transition-transform" title="${t.title}">${markHtml} ${t.title}</div>`;
+                    tasksHtml += `<div onclick="event.stopPropagation(); openPreviewModal('${t.id}')" class="text-[10px] p-1 mb-1 rounded cursor-pointer truncate font-bold ${bg} hover:scale-105 transition-transform" title="${t.title}">${markHtml} ${t.title}</div>`;
                 });
                 if(tasksOnDay.length > 3) tasksHtml += `<div class="text-[10px] text-slate-500 font-bold">+${tasksOnDay.length - 3} lainnya</div>`;
 
@@ -769,7 +785,7 @@
                 const dayStyle = isToday ? 'bg-blue-50/80 border-2 border-blue-400' : 'bg-white/40 border border-transparent';
 
                 grid.innerHTML += `
-                    <div class="rounded-lg p-1 md:p-2 flex flex-col overflow-hidden ${dayStyle}">
+                    <div onclick="openDayModal('${dateStr}')" class="rounded-lg p-1 md:p-2 flex flex-col overflow-hidden cursor-pointer hover:ring-2 hover:ring-blue-200 transition-all ${dayStyle}">
                         <div class="text-xs font-extrabold text-right mb-1 ${textDayClass} ${isToday ? 'text-blue-600' : ''}">${day}</div>
                         <div class="flex-1 overflow-y-auto no-scrollbar">${tasksHtml}</div>
                     </div>
@@ -904,6 +920,58 @@
             document.getElementById('deleteModal').classList.remove('flex'); 
         }
         function confirmDelete() { if (taskToDeleteId) { tasks = tasks.filter(t => t.id !== taskToDeleteId); saveToStorage(); renderApp(); closeDeleteModal(); } }
+
+        // DAY MODAL (MINI LIST DARI KALENDER)
+        function openDayModal(dateStr) {
+            const dayDate = new Date(dateStr);
+            const formattedDate = dayDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            document.getElementById('dayModalTitle').innerText = formattedDate;
+
+            const tasksOnDay = tasks.filter(t => {
+                if (t.selectedDates && t.selectedDates.length > 0) {
+                    return t.selectedDates.includes(dateStr);
+                } else {
+                    const start = t.startDate || t.deadline || '9999-12-31';
+                    const end = t.endDate || t.deadline || '0000-00-00';
+                    return dateStr >= start && dateStr <= end;
+                }
+            });
+
+            const listContainer = document.getElementById('dayModalList');
+            if (tasksOnDay.length === 0) {
+                listContainer.innerHTML = '<div class="text-center p-8 text-slate-400 font-bold text-sm border-2 border-dashed border-slate-200 rounded-xl">Keren! Tidak ada jadwal di hari ini. 🏖️</div>';
+            } else {
+                let html = '';
+                tasksOnDay.forEach(t => {
+                    const isDone = t.status === 'done';
+                    const cardStyle = isDone ? 'bg-slate-50 opacity-70 border-dashed' : 'bg-white border-slate-200 shadow-sm hover:shadow-md';
+                    const titleStyle = isDone ? 'text-slate-500 font-semibold' : 'text-slate-800 font-bold';
+                    const checkIcon = isDone ? `<svg class="w-4 h-4 text-green-500 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>` : '';
+                    
+                    const isHex = t.color && t.color.startsWith('#');
+                    const colorClass = isHex ? '' : (t.color || 'bg-slate-200');
+                    const colorStyle = isHex ? `style="background-color: ${t.color};"` : '';
+
+                    html += `<div class="p-4 border rounded-xl flex justify-between items-center cursor-pointer transition-all ${cardStyle}" onclick="closeDayModal(); openPreviewModal('${t.id}')">
+                        <div class="flex items-center gap-3">
+                            <div class="w-3.5 h-3.5 rounded-full ${colorClass} border border-slate-200 shadow-sm" ${colorStyle}></div>
+                            <div class="${titleStyle} text-sm flex items-center">${t.title} ${checkIcon}</div>
+                        </div>
+                    </div>`;
+                });
+                listContainer.innerHTML = html;
+            }
+
+            toggleBodyScroll(true);
+            document.getElementById('dayModal').classList.remove('hidden');
+            document.getElementById('dayModal').classList.add('flex');
+        }
+
+        function closeDayModal() {
+            toggleBodyScroll(false);
+            document.getElementById('dayModal').classList.add('hidden');
+            document.getElementById('dayModal').classList.remove('flex');
+        }
 
         // MANAJEMEN WARNA CUSTOM (COLOR PICKER)
         function renderColorPicker() {
